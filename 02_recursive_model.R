@@ -2,8 +2,20 @@ library(nwfscSurvey)
 library(sdmTMB)
 library(tidyverse)
 library(ggplot2)
+library(DHARMa)
 
-bio <- pull_bio(common_name="sablefish", survey="NWFSC.Combo")
+spp_name <- c("Pacific hake", "sablefish")[1]
+
+if(spp_name == "Pacific hake") {
+  min_age <- 1 # not many age 0s consistently sampled
+  max_age <- 5
+} 
+if(spp_name == "sablefish") {
+  min_age <- 0
+  max_age <- 6
+}
+
+bio <- pull_bio(common_name = spp_name, survey="NWFSC.Combo")
 names(bio) <- tolower(names(bio))
 haul <- pull_haul(survey="NWFSC.Combo")
 names(haul) <- tolower(names(haul))
@@ -43,7 +55,7 @@ subset <- dplyr::group_by(d, trawl_id) |>
     incl = ifelse(n_total > 0, 1, 0)) |>
   dplyr::filter(incl == 1) |>
   dplyr::select(-incl) |>
-  dplyr::filter(age <= 6)
+  dplyr::filter(age <= max_age, age >= min_age)
 
 subset <- dplyr::left_join(dplyr::select(subset, -lat, -lon,-year), locs) |>
   dplyr::left_join(yrs)
@@ -63,20 +75,34 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
   subset_age$notn <- subset_age$n_total - subset_age$n
   # Fit basic model -- include RW in intercept and spatiotemporal effects (missing 2020)
   fit <- sdmTMB(cbind(n, notn) ~ 1,
-                #time_varying = ~ 1, # time-varying intercept
+                time_varying = ~ 1, # time-varying intercept
+                time_varying_type = "ar1",
                            spatial = "on", # spatial field on
-                           spatiotemporal="rw", # random walk in spatiotemporal
+                           spatiotemporal="ar1", # random walk in spatiotemporal
                            time="year",
                            mesh=mesh,
                            family = binomial(),
                            data=subset_age,
                 extra_time = (2003:2023)[which(2003:2023 %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
+  # These plots are a simple way to make QQ plot for training data -- generally fits well
+  #res <- residuals(fit, type = "mle-mvn")
+  #qqnorm(res);abline(0, 1)
   
   # predict to locations in next age / year
   pred_df <- dplyr::filter(subset, age == (a+1), year > min(subset$year), n_total > 0)
 
   pred <- predict(fit, pred_df)
   pred$expected_n <- plogis(pred$est) * pred$n_total # predicted number of fish the next year
-  glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred)
+  glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred, family = "poisson")
+  sim_residuals <- simulateResiduals(fittedModel = glms[[a + 1]])
+  # plot(sim_residuals) QQ plot for test data
+  pred_df$resid <- sim_residuals$scaledResiduals
+  ggplot(pred_df, aes(sample = resid)) +
+    stat_qq() +
+    stat_qq_line() +
+    facet_wrap(~ year, scales = "free") +
+    theme_minimal() +
+    labs(title = "QQ Plot Faceted by Year",
+         x = "Theoretical Quantiles", y = "Sample Quantiles")
 }
 

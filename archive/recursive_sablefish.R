@@ -2,8 +2,9 @@ library(nwfscSurvey)
 library(sdmTMB)
 library(tidyverse)
 library(ggplot2)
+library(DHARMa)
 
-bio <- pull_bio(common_name="Pacific hake", survey="NWFSC.Combo")
+bio <- pull_bio(common_name="sablefish", survey="NWFSC.Combo")
 names(bio) <- tolower(names(bio))
 haul <- pull_haul(survey="NWFSC.Combo")
 names(haul) <- tolower(names(haul))
@@ -43,7 +44,7 @@ subset <- dplyr::group_by(d, trawl_id) |>
     incl = ifelse(n_total > 0, 1, 0)) |>
   dplyr::filter(incl == 1) |>
   dplyr::select(-incl) |>
-  dplyr::filter(age <= 5, age > 0)
+  dplyr::filter(age <= 6)
 
 subset <- dplyr::left_join(dplyr::select(subset, -lat, -lon,-year), locs) |>
   dplyr::left_join(yrs)
@@ -63,9 +64,10 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
   subset_age$notn <- subset_age$n_total - subset_age$n
   # Fit basic model -- include RW in intercept and spatiotemporal effects (missing 2020)
   fit <- sdmTMB(cbind(n, notn) ~ 1,
-                #time_varying = ~ 1, # time-varying intercept
-                           spatial = "on", # spatial field on
-                           spatiotemporal="rw", # random walk in spatiotemporal
+                           time_varying = ~ 1,
+                          time_varying_type = "ar1", 
+                          spatial = "on", # spatial field on
+                           spatiotemporal="ar1", # random walk in spatiotemporal
                            time="year",
                            mesh=mesh,
                            family = binomial(),
@@ -77,6 +79,8 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
 
   pred <- predict(fit, pred_df)
   pred$expected_n <- plogis(pred$est) * pred$n_total # predicted number of fish the next year
-  glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred)
+  glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred, family = "poisson")
+  # sim_residuals <- simulateResiduals(fittedModel = glms[[a + 1]])
+  # plot(sim_residuals)
 }
 
