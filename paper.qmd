@@ -2,13 +2,22 @@
 title: "Incorporating spatial distribution at age improves predictive ability of SDMs"
 format: pdf
 editor: visual
+bibliography: references.bib
 ---
 
 ## Abstract
 
 ## Introduction
 
-Why hake and sablefish? 2 species with strong gradients in distribution at age
+-   Age structure is important but generally ignored in marine SDMs
+
+-   Lots of reasons why age info might improve predictions – mechanisms include ontogenetic shifts, recruitment pulses, migration, fishing selectivity removing older portions of a population, etc
+
+-   If we can make forward predictions with some skill, there's lots of wins for management. Examples include predicting areas of bycatch risk, where certain cohorts might be in the future, etc
+
+-   Need consistently surveyed populations to examine the forecast skill. Use WCBTS as case study, with hake and sablefish targeted as focal species. Why hake and sablefish? 2 species with strong gradients in distribution at age – but in opposite directions and different life histories
+
+-   
 
 ## Methods
 
@@ -18,7 +27,7 @@ On the west coast of the USA, the West Coast Groundfish Bottom Trawl Survey (WCG
 
 ### Spatial age models
 
-For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 – 5, and for sablefish ages 0 – 6 (data from these ages represented 56% and 63% of the total aged fish, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, summarizing the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (with logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
+For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 – 5, and for sablefish ages 0 – 9 (data from these ages represented 54% and 75% of the total aged fish, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, summarizing the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (with logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
 
 $$
 \begin{aligned}
@@ -28,7 +37,7 @@ $$
 
 where $\boldsymbol{\beta_{t}}$ represent time - varying intercepts modeled as a random walk $\boldsymbol{\beta_{t}} \sim N \left( \boldsymbol{\beta_{t-1}}, \sigma_\beta \right)$, the spatial field $\boldsymbol{\omega_{s}} \sim \operatorname{MVNormal} \left( \boldsymbol{0}, \boldsymbol{\Sigma}_\omega \right)$ and the spatiotemporal fields $\delta_{\boldsymbol{s},t}$ are modeled as an AR(1) process $\boldsymbol{\delta}_{t} = \rho \boldsymbol{\delta}_{t-1} + \sqrt{1 - \rho^2} \boldsymbol{\epsilon_{t}}$, where $\boldsymbol{\epsilon_{t}} \sim \operatorname{MVNormal} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\epsilon} \right)$
 
-Estimation was performed via sdmTMB (Anderson et al) and using TMB / INLA SPDE etc...
+Spatial and spatiotemporal random fields were constructed as Gaussian Markov random fields (GMRFs) using the stochastic partial differential equation approach (SPDE) [@lindgren2011; @lindgren2015]. The SPDE method models the spatial correlation between points as a Matérn covariance function with smoothness parameter $\nu = 1$. Spatial meshes for all ages and species were constructed with a cutoff distance of 50km (this distance controls the spacing of mesh vertices). Parameter estimation was done using the sdmTMB software package [@Anderson2024] with R 4.3.1 [@rcore2024]. The sdmTMB package relies on Template Model Builder (TMB)[@kristensen2016] to quickly and efficiently maximize the marginal log likelihood using auto-differentiation and the Laplace approximation to integrate out random effects. Models were evaluated for convergence (positive-definite Hessian matrix, and a maximum absolute log likelihood gradient \< 0.001) and residuals diagnostics were evaluated with the DHARMa package [@dharma2022].
 
 ### Validating future predictive ability
 
@@ -42,47 +51,57 @@ As a second validation, we compared aggregated predictions across all ages to a 
 
 Figure @fig-hake-spatial-anomaly shows a concentration of age-1 (mostly immature) hake near the coast, and then a clear N/S split for age-2s and 3s with higher probabilities of occurrence in the South (on avg). Age-4 hake appear to have a more patchy & northern distribution
 
-Figure @sablefish-spatial-anomaly shows age 0-2 sablefish concentrated in shallow water, and more fish moving offshore by age 3. Several interesting patches in coastal OR have very low occurrence rates
+Figure @fig-sablefish-spatial-anomaly shows age 0-2 sablefish concentrated in shallow water, and more fish moving offshore by age 3. Several interesting patches in coastal OR have very low occurrence rates
 
-Figure @glm-coefficients shows that in general, there's more predictability (or maybe persistence for sablefish than hake). Using the distribution of age 1 and 2 fish to predict age 2 and 3 yields similar coefficients across species -- but for older age 4-5 sablefish, these coefficients increase a lot
+Figure @fig-spatial-parameters shows that for most ages, we see a decrease in the spatial and spatiotemporal variances as well as a decrease in the spatial range. This means that the fields for older fish become less peaky -- and the distribution of where fish are becomes patchier ( duh!)
 
-Figure @bycatch-risk aggregates occurrence probabilities for age 0 - 2 sablefish, potentially useful to identify hotspots
+Figure @fig-glm-coefficients shows that in general, there's more predictability (or maybe persistence for sablefish than hake). Using the distribution of age 1 and 2 fish to predict age 2 and 3 yields similar coefficients across species -- but for older age 4-5 sablefish, these coefficients increase a lot
 
-Similarly Figure @age5-sablefish shows occurrence probabilities for age 5 sablefish
+Figure @fig-bycatch-risk aggregates occurrence probabilities for age 0 - 2 sablefish, potentially useful to identify hotspots
 
+Similarly Figure @fig-age5-sablefish shows occurrence probabilities for age 5 sablefish
 
 ## Discussion
 
 #### Limitations
-- not predicting abundance (N) -- just proportions
-- We constructed single-age models, and this could be done in a multivariate (multinomial) framework -- but our approach allows for greater flexibility in letting relationships change by age. Tradeoff is that it doesn't impose sum to 1 constraint, binomials are independent
 
-\break  
+-   not predicting abundance (N) -- just proportions
+-   We constructed single-age models, and this could be done in a multivariate (multinomial) framework -- but our approach allows for greater flexibility in letting relationships change by age. Tradeoff is that it doesn't impose sum to 1 constraint, binomials are independent
 
-```{r label="hake-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for Pacific hake ages 1 -- 4.", echo=FALSE}
+\break
+
+```{r label="fig-hake-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for Pacific hake ages 1 -- 4.", echo=FALSE}
 knitr::include_graphics("plots/hake_spatial_anomalies.png")
 ```
 
-\break  
+\break
 
-```{r label="sablefish-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for sablefish ages 0 -- 5.", echo=FALSE}
+```{r label="fig-sablefish-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for sablefish ages 0 -- 5.", echo=FALSE}
 knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
 ```
 
-\break  
+\break
 
-```{r label="glm-coefficients", fig.cap="Estimated coefficients relating predicted densities of age a fish in year t to observed numbers the following year. The coefficients are interpreted with a multiplicate effect, such that a coefficient of 0.5 translates to an effect of exp(0.5) = 65% increase on the expected count in the future.", echo=FALSE}
+```{r label="fig-glm-coefficients", fig.cap="Estimated coefficients relating predicted densities of age a fish in year t to observed numbers the following year. The coefficients are interpreted with a multiplicate effect, such that a coefficient of 0.5 translates to an effect of exp(0.5) = 65% increase on the expected count in the future.", echo=FALSE}
 knitr::include_graphics("plots/glm_coefficients.png")
 ```
 
-\break  
+\break
 
-```{r label="bycatch-risk", fig.cap="Estimated probability of occurrence for age 0 -- 2 sablefish.", echo=FALSE}
+```{r label="fig-bycatch-risk", fig.cap="Estimated probability of occurrence for age 0 -- 2 sablefish.", echo=FALSE}
 knitr::include_graphics("plots/sablefish_spatial_risk.png")
 ```
 
-\break  
+\break
 
-```{r label="age5-sablefish", fig.cap="Estimated probability of occurrence for age 5 sablefish.", echo=FALSE}
+```{r label="fig-age5-sablefish", fig.cap="Estimated probability of occurrence for age 5 sablefish.", echo=FALSE}
 knitr::include_graphics("plots/sablefish_spatial_age5.png")
 ```
+
+\break
+
+```{r label="fig-spatial-parameters", fig.cap="Estimated spatial parameters (range, and spatial and spatiotemporal standard deviations). Points represent mean estimates; lines represent 95% confidence intervals", echo=FALSE}
+knitr::include_graphics("plots/spatial_parameters.png")
+```
+
+\break

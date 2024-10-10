@@ -99,6 +99,15 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
   #res <- residuals(fit, type = "mle-mvn")
   #qqnorm(res);abline(0, 1)
   
+  if(a == min(subset$age)) {
+    pars <- tidy(fit, "ran_pars")
+    pars$age <- a
+    ran_pars <- pars
+  } else {
+    pars <- tidy(fit, "ran_pars")
+    pars$age <- a
+    ran_pars <- rbind(ran_pars, pars)
+  }
   # predict to locations in next age / year
   pred_df <- dplyr::filter(subset, age == (a+1), year > min(subset$year), n_total > 0)
 
@@ -128,3 +137,44 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
   
 }
 
+saveRDS(ran_pars, paste0("predictions/",spp_name,"_ranpars.rds"))
+
+
+
+
+hake_pars <- readRDS(paste0("predictions/","Pacific hake","_ranpars.rds"))
+sablefish_pars <- readRDS(paste0("predictions/","sablefish","_ranpars.rds"))
+hake_pars$species <- "Pacific hake"
+sablefish_pars$species <- "sablefish"
+pars <- rbind(hake_pars, sablefish_pars)
+
+p1 <- dplyr::filter(pars, term == "range") |> 
+  ggplot(aes(age, estimate, col = species)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  xlab("Age") + 
+  ylab("Estimated range (km)") + 
+  theme_bw() + 
+  theme(legend.position = "none")
+
+p2 <- dplyr::filter(pars, term == "sigma_O") |> 
+  ggplot(aes(age, estimate, col = species)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  xlab("Age") + 
+  ylab(expression(paste("Spatial ", sigma))) + 
+  theme_bw() + 
+  theme(legend.position = "none")
+
+p3 <- dplyr::filter(pars, term == "sigma_E") |> 
+  ggplot(aes(age, estimate, col = species)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  xlab("Age") + 
+  ylab(expression(paste("Spatiotemporal ", sigma))) + 
+  theme_bw() + 
+  theme(legend.position = c(0.5, 0.85))
+
+combo <- gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
+
+ggsave(combo, filename="plots/spatial_parameters.png", height = 4, width=7)

@@ -22,7 +22,29 @@ for(spp in 1:2) {
     g <- glm(n ~ log(expected_n), data = d, family = "poisson")
     output[which(output$age==a),"mean"] <- coef(g)[2]
     output[which(output$age==a),c("lower","upper")] <- confint(g)[2,]
+    # 
+    # d$age <- a
+    #d$resid <- residuals(g)
+    # d$resid <- qnorm(simulateResiduals(fittedModel = g)$scaledResiduals)
+    # if(a == min_age) {
+    #   all_d <- d
+    # } else {
+    #   all_d <- rbind(all_d, d)
+    # }
   }
+  # all_d$species <- spp_name
+  # ggplot(data = dplyr::filter(all_d_spp, species=="sablefish"), aes(sample = resid)) +
+  #   stat_qq() +
+  #   stat_qq_line() +  # Add a reference line
+  #   labs(title = "Q-Q Plot of GLM Residuals", x = "Theoretical Quantiles", y = "Deviance Residuals") +
+  #   theme_minimal()
+  # 
+  
+  # if(spp == 1) {
+  #   all_d_spp <- all_d
+  # } else {
+  #   all_d_spp <- rbind(all_d_spp, all_d)
+  # }
   
   output$species <- spp_name
   output <- dplyr::filter(output, !is.na(mean))
@@ -43,6 +65,3 @@ ggplot(all_output, aes(age, mean, col = species)) +
   coord_flip() + theme_bw()
 
 ggsave("plots/glm_coefficients.png", width=7)
-
-
-
