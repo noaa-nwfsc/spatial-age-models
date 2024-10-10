@@ -1,0 +1,65 @@
+---
+title: "Incorporating spatial distribution at age improves predictive ability of SDMs"
+format: pdf
+editor: visual
+---
+
+## Abstract
+
+## Introduction
+
+Why hake and sablefish? 2 species with strong gradients in distribution at age
+
+## Methods
+
+### Data
+
+On the west coast of the USA, the West Coast Groundfish Bottom Trawl Survey (WCGBTS) has been an annual survey conduced from 2003 - present. The WCGBTS is designed to estimate the abundance, size, and age composition of groundfish species important to commercial and recreational fisheries found in near-bottom habitats on the west coast of the USA (Keller et al., 2017). The survey effort is concentrated in summer months and has been conducted annually since 2003 (here we use the data through 2018; data are publicly available at https://www.nwfsc.noaa.gov/data). Importantly, the random stratified sampling design, spatial and seasonal coverage, effort, and gears have remained relatively constant within the period we analyse. Like many other surveys around the world, no WCGBTS survey occured in 2020 because of the Covid-19 pandemic. Though the WCGBTS survey samples hundreds of species, we concentrated our analysis on two of the well sampled species from the WCGBTS, North Pacific hake and sablefish. \[more on biological gradients\] While otoliths are sampled continuously during the WCGBTS survey for a broad range of species, otoliths are generally aged when species are being prioritized for stock assessment by the Pacific Fishery Management Council (PFMC); full assessments between species may occur irregularly and be sporadically updated every 5 – 10 years. Hake and sablefish represent exceptions, as the hake stock is assessed annually by co-managers from the USA and Canada (Grandin et al. 2024) and sablefish is frequently assessed because of its high commercial value. For our analysis, we used hake collected 2007 – 2019 (mean 650.7 individuals sampled per year) and sablefish collected 2003 – 2023 (mean 1314.4 individuals sampled per year).
+
+### Spatial age models
+
+For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 – 5, and for sablefish ages 0 – 6 (56% and 63% of the total distribution of ages, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, summarizing the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (with logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
+
+$$
+\begin{aligned}
+logit \left( p_{\boldsymbol{s},t} \right) &= \boldsymbol{\beta_{t}} + \omega_{\boldsymbol{s}} + \delta_{\boldsymbol{s},t}
+\end{aligned}
+$$
+
+where $\boldsymbol{\beta_{t}}$ represent time - varying intercepts modeled as a random walk $\boldsymbol{\beta_{t}} \sim N \left( \boldsymbol{\beta_{t-1}}, \sigma_\beta \right)$, the spatial field $\boldsymbol{\omega_{s}} \sim \operatorname{MVNormal} \left( \boldsymbol{0}, \boldsymbol{\Sigma}_\omega \right)$ and the spatiotemporal fields $\delta_{\boldsymbol{s},t}$ are modeled as an AR(1) process $\boldsymbol{\delta}_{t} = \rho \boldsymbol{\delta}_{t-1} + \sqrt{1 - \rho^2} \boldsymbol{\epsilon_{t}}$, where $\boldsymbol{\epsilon_{t}} \sim \operatorname{MVNormal} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\epsilon} \right)$
+
+Estimation was performed via sdmTMB (Anderson et al) and using TMB / INLA SPDE etc...
+
+### Validating future predictive ability
+
+As a first validation, we leveraged the natural recursive element of our data to quantify the ability of our models to predict the future distribution of ages. For each of the species - age models constructed above, we made predictions to the survey locations in the following year (e.g. age 3 hake in years 2007 -- 2018 used to predict the distribution of age 4 hake in 2008 -- 2019). We related the predicted probabilities of occurrence $\hat{p}_{\boldsymbol{s},t}$ to observations by multiplying predictions by the total number of fish sampled for ageing, $\hat{n}_{s,t} = N_{s,t} \cdot \hat{p}_{\boldsymbol{s},t}$. We quantified the relationship between predictions and observations by fitting a simple Poisson GLM, where counts of fish of age $a+1$ in year $t+1$ were treated as the response and $log(\lambda_{s,t}) = \beta_{0} + \beta_{1} \cdot log \left( \hat{n}_{s,t} \right)$. The exponentiated slope parameter $exp(\beta_{1})$ represents a the change in expected counts that would be expected from a 1-unit change in $log(\hat{n}_{s,t})$, and can roughly be interpreted as an estimate of relative survival.
+
+As a second validation, we compared aggregated predictions across all ages to a SDM model that used total biomass as a response.
+
+### Links to fisheries data?
+
+## Results
+
+## Discussion
+
+#### Limitations
+- not predicting abundance (N) -- just proportions
+- We constructed single-age models, and this could be done in a multivariate framework -- but our approach allows for greater flexibility in letting relationships change by age
+
+\break  
+
+```{r label="hake-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for Pacific hake ages 1 -- 4.", echo=FALSE}
+knitr::include_graphics("plots/hake_spatial_anomalies.png")
+```
+
+\break  
+
+```{r label="sablefish-spatial-anomaly", fig.cap="Estimated spatial anomalies (shared across all years) for sablefish ages 0 -- 5.", echo=FALSE}
+knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
+```
+
+\break  
+
+```{r label="glm-coefficients", fig.cap="Estimated coefficients relating predicted densities of age a fish in year t to observed numbers the following year. The coefficients are interpreted with a multiplicate effect, such that a coefficient of 0.5 translates to an effect of exp(0.5) = 65% increase on the expected count in the future.", echo=FALSE}
+knitr::include_graphics("plots/glm_coefficients.png")
+```
