@@ -18,7 +18,7 @@ On the west coast of the USA, the West Coast Groundfish Bottom Trawl Survey (WCG
 
 ### Spatial age models
 
-For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 – 5, and for sablefish ages 0 – 6 (56% and 63% of the total distribution of ages, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, summarizing the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (with logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
+For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 – 5, and for sablefish ages 0 – 6 (data from these ages represented 56% and 63% of the total aged fish, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, summarizing the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (with logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
 
 $$
 \begin{aligned}
@@ -40,11 +40,22 @@ As a second validation, we compared aggregated predictions across all ages to a 
 
 ## Results
 
+Figure @fig-hake-spatial-anomaly shows a concentration of age-1 (mostly immature) hake near the coast, and then a clear N/S split for age-2s and 3s with higher probabilities of occurrence in the South (on avg). Age-4 hake appear to have a more patchy & northern distribution
+
+Figure @sablefish-spatial-anomaly shows age 0-2 sablefish concentrated in shallow water, and more fish moving offshore by age 3. Several interesting patches in coastal OR have very low occurrence rates
+
+Figure @glm-coefficients shows that in general, there's more predictability (or maybe persistence for sablefish than hake). Using the distribution of age 1 and 2 fish to predict age 2 and 3 yields similar coefficients across species -- but for older age 4-5 sablefish, these coefficients increase a lot
+
+Figure @bycatch-risk aggregates occurrence probabilities for age 0 - 2 sablefish, potentially useful to identify hotspots
+
+Similarly Figure @age5-sablefish shows occurrence probabilities for age 5 sablefish
+
+
 ## Discussion
 
 #### Limitations
 - not predicting abundance (N) -- just proportions
-- We constructed single-age models, and this could be done in a multivariate framework -- but our approach allows for greater flexibility in letting relationships change by age
+- We constructed single-age models, and this could be done in a multivariate (multinomial) framework -- but our approach allows for greater flexibility in letting relationships change by age. Tradeoff is that it doesn't impose sum to 1 constraint, binomials are independent
 
 \break  
 
@@ -62,4 +73,16 @@ knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
 
 ```{r label="glm-coefficients", fig.cap="Estimated coefficients relating predicted densities of age a fish in year t to observed numbers the following year. The coefficients are interpreted with a multiplicate effect, such that a coefficient of 0.5 translates to an effect of exp(0.5) = 65% increase on the expected count in the future.", echo=FALSE}
 knitr::include_graphics("plots/glm_coefficients.png")
+```
+
+\break  
+
+```{r label="bycatch-risk", fig.cap="Estimated probability of occurrence for age 0 -- 2 sablefish.", echo=FALSE}
+knitr::include_graphics("plots/sablefish_spatial_risk.png")
+```
+
+\break  
+
+```{r label="age5-sablefish", fig.cap="Estimated probability of occurrence for age 5 sablefish.", echo=FALSE}
+knitr::include_graphics("plots/sablefish_spatial_age5.png")
 ```
