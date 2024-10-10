@@ -5,17 +5,17 @@ library(ggplot2)
 library(DHARMa)
 library(surveyjoin)
 
-spp_name <- c("Pacific hake", "sablefish")[1]
+spp_name <- c("Pacific hake", "sablefish")[2]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
-  max_age <- 5
+  max_age <- 6
   min_year <- 2007
   max_year <- 2019
 } 
 if(spp_name == "sablefish") {
   min_age <- 0
-  max_age <- 6
+  max_age <- 10
   min_year <- 2003
   max_year <- 2023
 }

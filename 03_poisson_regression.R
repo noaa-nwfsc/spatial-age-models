@@ -8,11 +8,11 @@ for(spp in 1:2) {
   
   if(spp_name == "Pacific hake") {
     min_age <- 1 # not many age 0s consistently sampled
-    max_age <- 5
+    max_age <- 6
   } 
   if(spp_name == "sablefish") {
     min_age <- 0
-    max_age <- 6
+    max_age <- 10
   }
   
   output <- data.frame(age = seq(min_age, max_age), mean = NA, lower = NA, upper = NA)
@@ -42,7 +42,7 @@ ggplot(all_output, aes(age, mean, col = species)) +
   ylab("Estimated slope") + 
   coord_flip() + theme_bw()
 
-ggsave("plots/glm_coefficients.png")
+ggsave("plots/glm_coefficients.png", width=7)
 
 
 

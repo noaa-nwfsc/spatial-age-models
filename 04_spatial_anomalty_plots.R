@@ -8,11 +8,11 @@ for(spp in 1:2) {
   
   if(spp_name == "Pacific hake") {
     min_age <- 1 # not many age 0s consistently sampled
-    max_age <- 5
+    max_age <- 6
   } 
   if(spp_name == "sablefish") {
     min_age <- 0
-    max_age <- 6
+    max_age <- 10
   }
   
   for(a in min_age:(max_age - 1)) {
@@ -60,8 +60,8 @@ ocean_color <- "#D3EAF2"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 ggplot(coast_proj) + 
+  geom_point(data = hake, aes(x = X * 1000, y = Y * 1000, col = omega_s), size=0.02) + 
   geom_sf(fill = land_color) +  # Set land color
-  geom_point(data = hake, aes(x = X * 1000, y = Y * 1000, col = omega_s)) + 
   scale_color_gradient2(name = "Anomaly") +  # legend title 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
@@ -69,18 +69,18 @@ ggplot(coast_proj) +
         strip.text = element_text(color = "black"),  # Set facet label text color to black
         strip.background = element_rect(fill = "white")) +  # Set facet label background to white
   facet_wrap(~age, nrow = 1)
-ggsave("plots/hake_spatial_anomalies.png")  
+ggsave("plots/hake_spatial_anomalies.png", width = 7, height = 4)  
   
 
 ggplot(coast_proj) + 
+  geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = omega_s), size=0.02) + 
   geom_sf(fill = land_color) +  # Set land color
-  geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = omega_s)) + 
   scale_color_gradient2(name = "Anomaly") +  # legend title 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
         strip.text = element_text(color = "black"),  # Set facet label text color to black
         strip.background = element_rect(fill = "white")) +  # Set facet label background to white
-  facet_wrap(~age, nrow = 1)
-ggsave("plots/sablefish_spatial_anomalies.png")  
+  facet_wrap(~age, nrow = 2)
+ggsave("plots/sablefish_spatial_anomalies.png", width = 7, height = 8)  
 

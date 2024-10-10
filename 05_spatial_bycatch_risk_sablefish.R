@@ -35,6 +35,10 @@ sablefish <- dplyr::filter(all_output, species == "sablefish", year %in% seq(201
   dplyr::group_by(year, X, Y) |>
   dplyr::summarise(p = sum(p)) 
 
+# also de-mean the values by year so this is relative
+sablefish <- dplyr::group_by(sablefish, year) |>
+  dplyr::mutate(centered_p = p - mean(p))
+
 map_data <- rnaturalearth::ne_countries(
   scale = "medium",
   returnclass = "sf", country = "united states of america")
@@ -53,14 +57,15 @@ ocean_color <- "#D3EAF2"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 ggplot(coast_proj) + 
+  geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = centered_p), size=0.02) + 
   geom_sf(fill = land_color) +  # Set land color
-  geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = p)) + 
-  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "Occurrence") +  # legend title 
+  #scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "Occurrence") +  # legend title 
+  scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
         strip.text = element_text(color = "black"),  # Set facet label text color to black
         strip.background = element_rect(fill = "white")) +  # Set facet label background to white
   facet_wrap(~year, nrow = 1)
-ggsave("plots/sablefish_spatial_risk.png")  
+ggsave("plots/sablefish_spatial_risk.png", width = 7, height = 4)  
 
