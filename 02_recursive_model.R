@@ -3,17 +3,23 @@ library(sdmTMB)
 library(tidyverse)
 library(ggplot2)
 library(DHARMa)
+library(surveyjoin)
 
 spp_name <- c("Pacific hake", "sablefish")[1]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
   max_age <- 5
+  min_year <- 2007
+  max_year <- 2019
 } 
 if(spp_name == "sablefish") {
   min_age <- 0
   max_age <- 6
+  min_year <- 2003
+  max_year <- 2023
 }
+all_years <- min_year:max_year
 
 bio <- pull_bio(common_name = spp_name, survey="NWFSC.Combo")
 names(bio) <- tolower(names(bio))
@@ -22,7 +28,9 @@ names(haul) <- tolower(names(haul))
 
 # filter ages to be in core range
 d <- bio
-d <- dplyr::filter(d, sex == "F", !is.na(age))
+d <- dplyr::filter(d, sex == "F", !is.na(age), 
+                   year >= min_year,
+                   year <= max_year)
 
 # group data by age and year 
 grouped <- dplyr::group_by(d, age, year, trawl_id) |>
@@ -68,6 +76,9 @@ subset$present[which(is.na(subset$present))] <- 0
 max_year <- max(subset$year)
 glms <- list()
 
+survey_grid <- surveyjoin::nwfsc_grid
+survey_grid <- add_utm_columns(survey_grid, ll_names = c("lon","lat"))
+
 for(a in min(subset$age):(max(subset$age) - 1)) {
   # Take all age 'a' fish from 2003 - 2022. construct a coarse mesh (small n)
   subset_age <- dplyr::filter(subset, age == a, year < max_year, n_total > 0)
@@ -83,7 +94,7 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
                            mesh=mesh,
                            family = binomial(),
                            data=subset_age,
-                extra_time = (2003:2023)[which(2003:2023 %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
+                extra_time = all_years[which(all_years %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
   # These plots are a simple way to make QQ plot for training data -- generally fits well
   #res <- residuals(fit, type = "mle-mvn")
   #qqnorm(res);abline(0, 1)
@@ -93,16 +104,27 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
 
   pred <- predict(fit, pred_df)
   pred$expected_n <- plogis(pred$est) * pred$n_total # predicted number of fish the next year
-  glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred, family = "poisson")
-  sim_residuals <- simulateResiduals(fittedModel = glms[[a + 1]])
+  #glms[[a + 1]] <- glm(n ~ log(expected_n), data = pred, family = "poisson")
+  #sim_residuals <- simulateResiduals(fittedModel = glms[[a + 1]])
   # plot(sim_residuals) QQ plot for test data
-  pred_df$resid <- sim_residuals$scaledResiduals
-  ggplot(pred_df, aes(sample = resid)) +
-    stat_qq() +
-    stat_qq_line() +
-    facet_wrap(~ year, scales = "free") +
-    theme_minimal() +
-    labs(title = "QQ Plot Faceted by Year",
-         x = "Theoretical Quantiles", y = "Sample Quantiles")
+  #pred$resid <- sim_residuals$scaledResiduals
+  # ggplot(pred_df, aes(sample = resid)) +
+  #   stat_qq() +
+  #   stat_qq_line() +
+  #   facet_wrap(~ year, scales = "free") +
+  #   theme_minimal() +
+  #   labs(title = "QQ Plot Faceted by Year",
+  #        x = "Theoretical Quantiles", y = "Sample Quantiles")
+  # 
+  saveRDS(pred, paste0("predictions/",spp_name,"_",a,".rds"))
+  
+  
+  # predict to survey grid for mapping
+  #survey_grid$year <- 2019
+  new_grid <- replicate_df(survey_grid, "year", all_years)
+  
+  pred <- predict(fit, new_grid)
+  saveRDS(pred, paste0("predictions/",spp_name,"_",a,"_surveygrid.rds"))
+  
 }
 
