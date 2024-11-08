@@ -1,0 +1,66 @@
+library(tidyverse)
+library(ggplot2)
+
+spp_name <- c("Pacific hake", "sablefish")[2]
+
+if(spp_name == "Pacific hake") {
+  min_age <- 1 # not many age 0s consistently sampled
+  max_age <- 6
+  years <- 2010:2019
+  ages <- seq(min_age, min_age+4)
+} 
+if(spp_name == "sablefish") {
+  min_age <- 0
+  max_age <- 10
+  years <- 2014:2023
+  ages <- seq(min_age, min_age+4)
+}
+
+for(a in min_age:(max_age - 1)) {
+  pred <- readRDS(paste0("predictions/",spp_name,"_",a,"_surveygrid.rds"))
+  pred <- dplyr::select(pred, lon, lat, X, Y, year, est) |>
+    dplyr::mutate(age = a) |>
+    dplyr::filter(year %in% years)
+  if(a == min_age) {
+    pred_all <- pred
+  } else {
+    pred_all <- rbind(pred_all, pred)
+  }
+}
+
+# now convert the 'est' to normalized probabilities across ages
+pred_all <- dplyr::mutate(pred_all, p = plogis(est)) |>
+  dplyr::group_by(X,Y,year) |>
+  dplyr::mutate(p_norm = p / sum(p)) |>
+  dplyr::filter(age %in% ages)
+
+map_data <- rnaturalearth::ne_countries(
+  scale = "medium",
+  returnclass = "sf", country = "united states of america")
+# Crop the polygon for plotting and efficiency:
+# st_bbox(map_data) # find the rough coordinates
+coast <- suppressWarnings(suppressMessages(
+  sf::st_crop(map_data,
+              c(xmin = -132, ymin = 30, xmax = -117, ymax = 50))))
+
+utm_zone10 <- 3157
+coast_proj <- sf::st_transform(coast, crs = utm_zone10)
+
+# Define the new colors
+land_color <- "#E0CDA9"  # beige for land
+ocean_color <- "#D3EAF2"  # grayish blue for ocean
+
+# Plot coast with custom land and ocean colors
+g <- ggplot(coast_proj) + 
+  geom_tile(data = pred_all, aes(x = X * 1000, y = Y * 1000, col = p_norm)) + 
+  geom_sf(fill = land_color) +  # Set land color
+  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "Probability") +  # legend title 
+  #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
+  theme_light() + 
+  labs(x = "Longitude", y = "Latitude") +
+  theme(panel.background = element_rect(fill = ocean_color),  
+        strip.text = element_text(color = "black"),  # Set facet label text color to black
+        strip.background = element_rect(fill = "white")) +  # Set facet label background to white
+  facet_grid(age ~ year)
+
+ggsave(g, filename = paste0("plots/spatial_composition_",spp_name,".png"), height = 7, width = 7)
