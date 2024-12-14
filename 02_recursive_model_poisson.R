@@ -79,6 +79,41 @@ glms <- list()
 survey_grid <- surveyjoin::nwfsc_grid
 survey_grid <- add_utm_columns(survey_grid, ll_names = c("lon","lat"))
 
+# Fit the null model
+# subset_age <- dplyr::filter(subset, 
+#                             age %in% seq(min(subset$age), (max(subset$age) - 1)), 
+#                             year < max_year, n_total > 0) |>
+#   dplyr::group_by(trawl_id) |>
+#   dplyr::summarise(n = sum(n), n_total = n_total[1],
+#                    lat = lat[1], lon = lon[1],
+#                    year = year[1],
+#                    X = X[1], Y = Y[1]) |>
+#   as.data.frame()
+# mesh <- make_mesh(subset_age, xy_cols = c("X","Y"), cutoff=50)
+# fit <- sdmTMB(n ~ 1,
+#               time_varying = ~ 1, # time-varying intercept
+#               time_varying_type = "ar1",
+#               spatial = "on", # spatial field on
+#               spatiotemporal="ar1", # random walk in spatiotemporal
+#               time="year",
+#               mesh=mesh,
+#               family = poisson(),
+#               offset = log(subset_age$n_total),
+#               data=subset_age,
+#               priors = sdmTMBpriors(
+#                 ar1_rho = normal(0, 1),
+#                 matern_s = pc_matern(range_gt = 5, sigma_lt = 1)
+#               ),
+#               extra_time = all_years[which(all_years %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
+# # Make predictions to next year
+# pred_df <- dplyr::filter(subset, 
+#                             age %in% seq(min(subset$age)+1, (max(subset$age))), 
+#                             year == max_year, n_total > 0)
+# pred <- predict(object = fit, newdata = pred_df, offset = pred_df$n_total)
+# pred_df$expected_n <- exp(pred$est)
+# saveRDS(pred_df, paste0("predictions/",spp_name,"_null",".rds"))
+
+# Fit the age-structured model
 for(a in min(subset$age):(max(subset$age) - 1)) {
   # Take all age 'a' fish from 2003 - 2022. construct a coarse mesh (small n)
   subset_age <- dplyr::filter(subset, age == a, year < max_year, n_total > 0)
@@ -92,9 +127,12 @@ for(a in min(subset$age):(max(subset$age) - 1)) {
                            spatiotemporal="ar1", # random walk in spatiotemporal
                            time="year",
                            mesh=mesh,
-                           family = nbinom2(),
+                           family = poisson(),
                            offset = log(subset_age$n_total),
                            data=subset_age,
+                priors = sdmTMBpriors(
+                  ar1_rho = normal(0, 1)
+                ),
                 extra_time = all_years[which(all_years %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
   # These plots are a simple way to make QQ plot for training data -- generally fits well
   #res <- residuals(fit, type = "mle-mvn")

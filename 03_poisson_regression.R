@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggplot2)
 library(DHARMa)
 library(viridis)
+library(glmmTMB)
 
 for(spp in 1:2) {
   spp_name <- c("Pacific hake", "sablefish")[spp]
@@ -31,6 +32,19 @@ for(spp in 1:2) {
     # } else {
     #   all_d <- rbind(all_d, d)
     # }
+    # Fit a GLMM with year-specific random effects
+    d$x <- log(d$expected_n)
+    g <- glmmTMB(n ~ x|year, data = d, family = "poisson")
+    coefs <- coef(g)[[1]]$year
+    coefs$species <- spp_name
+    coefs$age <- a
+    coefs$year <- as.numeric(rownames(coefs))
+    if(a == min_age & spp == 1) {
+      all_coefs <- coefs
+    } else {
+      all_coefs <- rbind(all_coefs, coefs)
+    }
+    
   }
   # all_d$species <- spp_name
   # ggplot(data = dplyr::filter(all_d_spp, species=="sablefish"), aes(sample = resid)) +
@@ -64,4 +78,36 @@ ggplot(all_output, aes(age, mean, col = species)) +
   ylab("Estimated slope") + 
   coord_flip() + theme_bw()
 
-ggsave("plots/glm_coefficients.png", width=7)
+ggsave("plots/glm_coefficients.png", width=6, height = 5)
+
+
+# look at coefficients from the year model, as a diagnostic
+dplyr::filter(all_coefs) |>
+  ggplot(aes(year, x, group=age, col = as.factor(age))) + 
+  geom_line() + xlab("Year") + 
+  ylab("Estimated random slope") +
+  scale_color_viridis_d(option="magma", begin = 0.2, end = 0.8) + 
+  theme_bw() + 
+  theme(strip.background = element_rect(fill="white")) + 
+  facet_wrap(~species, ncol = 1, scale="free_y")
+ggsave("plots/glm_coefficients.png", width=7, height = 5)
+
+library(tidyr)
+library(ggplot2)
+library(reshape2)
+
+df_wide <- dplyr::filter(all_coefs, species == "Pacific hake") |>
+  dplyr::select(x, species, age, year) |>
+  pivot_wider(names_from = age, values_from = x, names_prefix = "age_")
+correlation_matrix <- cor(df_wide[,-c(1:2)], use = "complete.obs") # Exclude the year column
+# Melt the correlation matrix for ggplot
+correlation_melt <- melt(correlation_matrix)
+# Plot the heatmap
+ggplot(correlation_melt, aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
+  theme_minimal() +
+  labs(title = "Correlation Matrix", x = "Age", y = "Age", fill = "Correlation")
+
+
+
