@@ -1,0 +1,98 @@
+PacFIN Port Name,Pcid,Agency,Lon,Lat,State,Position,County,Notes
+Alameda,ALM,CDFG,-122.23826,37.77261,CA,Exact,Alameda,
+Albion,ALB,CDFG,-123.77067,39.22701,CA,Exact,Mendocino,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Anacortes,ANA,WDFW,-122.60897,48.51147,WA,Exact,Skagit,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Astoria,AST,ODFW,-123.85876,46.18838,OR,Exact,Clatsop,
+Avila,AVL,CDFG,-120.75090,35.16445,CA,Exact,San Luis Obispo,
+Bandon,BDN,ODFW,-124.41133,43.12057,OR,Exact,Coos,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Bellingham Bay,BLL,WDFW,-122.51040,48.75651,WA,Exact,Whatcom,
+Berkeley,BKL,CDFG,-122.31596,37.86670,CA,Exact,Alameda,
+Blaine,BLN,WDFW,-122.76244,48.99119,WA,Exact,Whatcom,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Bodega Bay,BDG,CDFG,-123.05032,38.32978,CA,Exact,Sonoma,
+Bolinas,BOL,CDFG,-122.68039,37.90559,CA,Exact,Marin,VMS points don't appear to converge on this port
+Brookings,BRK,ODFW,-124.26834,42.04750,OR,Exact,Curry,
+Cannon Beach,CNB,ODFW,-123.96492,45.89177,OR,Exact,Clatsop,"VMS points don't appear to converge on this port, doesn't seem to be in PacFIN database"
+Charleston (Coos Bay),COS,ODFW,-124.32148,43.33971,OR,Exact,Coos,
+Copalis Beach,CPL,WDFW,-124.17916,47.12607,WA,Approximate - do not use for distance calculations,Grays Harbor,VMS points don't appear to converge on this port
+Crescent City,CRS,CDFG,-124.18493,41.74500,CA,Exact,Del Norte,
+Dana Point,DNA,CDFG,-117.69160,33.46081,CA,Exact,Orange,
+Depoe Bay,DPO,ODFW,-124.06303,44.80923,OR,Exact,Lincoln,
+Eureka,ERK,CDFG,-124.16367,40.80698,CA,Exact,Humboldt,
+Everett,EVR,WDFW,-122.21760,47.99713,WA,Exact,Snohomish,Not a lot of VMS points converge on this port
+Fields Landing,FLN,CDFG,-124.22103,40.72792,CA,Exact,Humboldt,
+Florence,FLR,ODFW,-124.10328,43.96629,OR,Exact,Lane,
+Fort Bragg,BRG,CDFG,-123.81064,39.42769,CA,Exact,Mendocino,
+Friday Harbor,FRI,WDFW,-123.01037,48.53474,WA,Exact,San Juan,VMS points don't appear to converge on this port
+Gearhart - Seaside,GSS,ODFW,-123.92419,45.99283,OR,Exact,Clatsop,VMS points don't appear to converge on this port
+Gold Beach,GLD,ODFW,-124.42241,42.42163,OR,Exact,Curry,
+Grays Harbor,GRH,WDFW,-123.88366,46.98149,WA,Exact,Grays Harbor,
+Ilwaco/Chinook,LWC,WDFW,-124.04177,46.30345,WA,Exact,Pacific,Seems like there are 2 places where fish are offloaded: Ilwaco and Chinook (~8 km to the east)
+La Conner,LAC,WDFW,-122.50233,48.38694,WA,Exact,Skagit,VMS points don't appear to converge on this port
+La Push,LAP,WDFW,-124.63704,47.91075,WA,Exact,Clallam,
+Long Beach,LGB,CDFG,-118.20888,33.77254,CA,Exact,Los Angeles,
+Marina Del Rey (Not a listed PacFIN Port),,,-118.44811,33.97355,CA,Exact,,"Not a PacFIN port, but a lot of VMS points converge here"
+Monterey,MNT,CDFG,-121.89031,36.60595,CA,Exact,Monterey,
+Morro Bay,MRO,CDFG,-120.85766,35.37007,CA,Exact,San Luis Obispo,
+Moss Landing,MOS,CDFG,-121.78536,36.80311,CA,Exact,Monterey,
+Neah Bay,NEA,WDFW,-124.61380,48.36804,WA,Exact,Clallam,
+Nehalem Bay,NHL,ODFW,-123.91564,45.70560,OR,Exact,Tillamook,VMS points don't appear to converge on this port
+Netarts Bay,NTR,ODFW,-123.94840,45.40284,OR,Exact,Tillamook,VMS points don't appear to converge on this port
+Newport,NEW,ODFW,-124.05359,44.62820,OR,Exact,Lincoln,
+Newport Beach,NWB,CDFG,-117.90588,33.61086,CA,Exact,Orange,
+Oakland,OAK,CDFG,-122.29044,37.79132,CA,Exact,Alameda,
+Oceanside,OCN,CDFG,-117.39348,33.20658,CA,Exact,San Diego,
+Olympia,OLY,WDFW,-122.89420,47.04752,WA,Exact,Thurston,VMS points don't appear to converge on this port
+Other Columbia River Ports,OCR,WDFW,-124.04941,46.25006,WA,Approximate - do not use for distance calculations,Clatsop,VMS points don't appear to converge on this port
+Other Del Norte County Ports,ODN,CDFG,-124.15772,41.73168,CA,Approximate - do not use for distance calculations,Del Norte,VMS points don't appear to converge on this port
+Other Humboldt County Ports,OHB,CDFG,-124.24072,40.76649,CA,Approximate - do not use for distance calculations,Humboldt,VMS points don't appear to converge on this port
+Other La and Orange Cnty Ports,OLA,CDFG,-118.11710,33.74285,CA,Approximate - do not use for distance calculations,Los Angeles,VMS points don't appear to converge on this port
+Other Mendocino County Ports,OMD,CDFG,-123.80455,39.29682,CA,Approximate - do not use for distance calculations,Mendocino,VMS points don't appear to converge on this port
+Other North Puget Sound Ports,ONP,WDFW,-122.62960,48.61685,WA,Approximate - do not use for distance calculations,Skagit,VMS points don't appear to converge on this port
+OTHER OR UNKNOWN CALIFORNIA PORTS,OCA,CDFG,-121.82181,36.23922,CA,Approximate - do not use for distance calculations,,VMS points don't appear to converge on this port
+Other Or Unknown Washington Ports,OWA,WDFW,-123.97489,48.16912,WA,Approximate - do not use for distance calculations,Clallam,VMS points don't appear to converge on this port
+Other S. F. Bay and San Mateo County Ports,OSF,CDFG,-122.50309,37.70812,CA,Approximate - do not use for distance calculations,San Francisco,VMS points don't appear to converge on this port
+Other San Diego County Ports,OSD,CDFG,-117.29928,33.04583,CA,Approximate - do not use for distance calculations,San Diego,VMS points don't appear to converge on this port
+Other San Luis Obispo County Ports,OSL,CDFG,-120.89381,35.43826,CA,Approximate - do not use for distance calculations,San Luis Obispo,VMS points don't appear to converge on this port
+Other Santa Barbara and Ventura County Ports,OBV,CDFG,-119.47659,34.37284,CA,Approximate - do not use for distance calculations,Ventura,VMS points don't appear to converge on this port
+Other Santa Cruz and Monterey County Ports,OCM,CDFG,-121.80953,36.85115,CA,Approximate - do not use for distance calculations,Monterey,VMS points don't appear to converge on this port
+Other Sonoma and Marin County Outer Coast Ports,OSM,CDFG,-123.00401,38.29564,CA,Approximate - do not use for distance calculations,Marin,VMS points don't appear to converge on this port
+Other South Puget Sound Ports,OSP,WDFW,-122.70774,47.25211,WA,Approximate - do not use for distance calculations,Pierce,VMS points don't appear to converge on this port
+Other Washingtion Coastal Ports,OWC,WDFW,-124.32668,47.38733,WA,Approximate - do not use for distance calculations,Grays Harbor,VMS points don't appear to converge on this port
+Oxnard,OXN,CDFG,-119.22438,34.16501,CA,Exact,Ventura,
+Pacific City,PCC,ODFW,-123.96502,45.19930,OR,Exact,Tillamook,VMS points don't appear to converge on this port
+Point Arena,ARE,CDFG,-123.71075,38.91447,CA,Exact,Mendocino,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Point Reyes,RYS,CDFG,-122.97335,37.99531,CA,Exact,Marin,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Port Angeles,PAG,WDFW,-123.45084,48.12453,WA,Exact,Clallam,
+Port Hueneme,HNM,CDFG,-119.20739,34.15009,CA,Exact,Ventura,
+Port Orford,ORF,ODFW,-124.49823,42.73929,OR,Exact,Curry,
+Port Townsend,TNS,WDFW,-122.77509,48.10638,WA,Exact,Jefferson,
+Princeton/Half Moon Bay,PRN,CDFG,-122.48250,37.50118,CA,Exact,San Mateo,
+PSEUDO PORT CODE FOR COLUMBIA RIVER,CRV,ODFW,-123.94781,46.23873,OR,Approximate - do not use for distance calculations,Clatsop/Pacific,VMS points don't appear to converge on this port
+Richmond,RCH,CDFG,-122.37218,37.92246,CA,Exact,Contra Costa,
+Salmon River,SRV,ODFW,-124.00722,45.04614,OR,Approximate - do not use for distance calculations,Lincoln,"VMS points don't appear to converge on this port, doesn't seem to be in PacFIN database"
+San Diego,SD,CDFG,-117.17365,32.71060,CA,Exact,San Diego,
+San Francisco,SF,CDFG,-122.41919,37.81012,CA,Exact,San Francisco,
+San Pedro,SP,CDFG,-118.27676,33.73011,CA,Exact,Los Angeles,
+Santa Barbara,SB,CDFG,-119.69245,34.40429,CA,Exact,Santa Barbara,
+Santa Cruz,CRZ,CDFG,-122.00243,36.96620,CA,Exact,Santa Cruz,
+Sausalito,SLT,CDFG,-122.49669,37.86831,CA,Exact,Marin,
+Seattle,SEA,WDFW,-122.38465,47.62947,WA,Exact,King,
+Sequim,SEQ,WDFW,-123.07971,48.13068,WA,Exact,Clallam,VMS points don't appear to converge on this port
+Shelton,SHL,WDFW,-123.09171,47.21256,WA,Exact,Mason,VMS points don't appear to converge on this port
+Shilshole & Lake Washington (Not a listed PacFIN Port),,,-122.40597,47.66805,WA,Exact,King,"Not a PacFIN port, but a lot of VMS points converge here"
+Siletz Bay,SLZ,ODFW,-124.02395,44.92697,OR,Exact,Lincoln,"Located in the town of Siletz, not even on Siletz Bay and VMS points don't appear to converge on this port (or Siletz Bay)"
+Tacoma,TAC,WDFW,-122.41211,47.28529,WA,Exact,Pierce,
+Terminal Island,TRM,CDFG,-118.26723,33.73639,CA,Exact,Los Angeles,
+Tillamook/Garibaldi,TLL,ODFW,-123.91189,45.55377,OR,Exact,Tillamook,
+Tomales Bay,TML,CDFG,-122.91277,38.17128,CA,Exact,Marin,VMS points don't appear to converge on this port
+Trinidad,TRN,CDFG,-124.14669,41.05485,CA,Exact,Humboldt,"Not feasible to create a port polygon, but a lot of VMS points converge here"
+Vallejo (Not a listed PacFIN Port),,,-122.27210,38.10890,CA,Exact,,"Not a PacFIN port, but a lot of VMS points converge here"
+Ventura,VEN,CDFG,-119.26303,34.24149,CA,Exact,Ventura,
+Waldport,WLD,ODFW,-124.06999,44.42682,OR,Exact,Lincoln,VMS points don't appear to converge on this port
+Westport,WPT,WDFW,-124.10832,46.90757,WA,Exact,Grays Harbor,
+Willapa Bay,WLB,WDFW,-124.02602,46.50102,WA,Exact,Pacific,
+Willmington,WLM,CDFG,-118.26614,33.76147,CA,Exact,Los Angeles,
+Winchester Bay,WIN,ODFW,-124.17828,43.67965,OR,Exact,Douglas,
+Yachats,YAC,ODFW,-124.10214,44.30906,OR,Approximate - do not use for distance calculations,Lincoln,VMS points don't appear to converge on this port
+,,,,,,,,
+,,,,,,,,
