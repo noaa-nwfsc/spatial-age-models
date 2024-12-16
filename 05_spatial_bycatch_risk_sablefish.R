@@ -15,7 +15,39 @@ spp <- 2
     max_age <- 6
   }
   
-d <- readRDS(paste0("predictions/",spp_name,"_",a,"_surveygrid.rds"))
+d <- readRDS(paste0("predictions/",spp_name,"_",min_age+1,"_surveygrid.rds"))
+
+sablefish <- dplyr::filter(d, 
+                           year %in% seq(2015,2023,by=2)) |>
+  dplyr::mutate(p = exp(est))
+map_data <- rnaturalearth::ne_countries(
+  scale = "medium",
+  returnclass = "sf", country = "united states of america")
+# Crop the polygon for plotting and efficiency:
+# st_bbox(map_data) # find the rough coordinates
+coast <- suppressWarnings(suppressMessages(
+  sf::st_crop(map_data,
+              c(xmin = -132, ymin = 30, xmax = -117, ymax = 50))))
+
+utm_zone10 <- 3157
+coast_proj <- sf::st_transform(coast, crs = utm_zone10)
+
+# Define the new colors
+land_color <- "#E0CDA9"  # beige for land
+ocean_color <- "#D3EAF2"  # grayish blue for ocean
+
+p1 <- ggplot(coast_proj) + 
+  geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = p), size = 0.02) + 
+  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
+  #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
+  geom_sf(fill = land_color) +  # Set land color
+  theme_light() + 
+  labs(x = "Longitude", y = "Latitude") +
+  theme(panel.background = element_rect(fill = ocean_color),  
+        strip.text = element_text(color = "black"),  # Set facet label text color to black
+        strip.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +  # Set facet label background to white
+  facet_wrap(~year, nrow = 1)
 
 # read in ports
 ports_rad <- readRDS("~/Documents/Github Projects/spatial-age-models/ports_rad.rds")
@@ -55,12 +87,14 @@ distances_long <- dplyr::rename(distances_long, Pcid = port)
 distances_long <- dplyr::left_join(distances_long, ports_rad[,c("Pcid","Name")])
 distances_long$Name[which(distances_long$Name=="Charleston (Coos Bay)")] <- "Coos Bay"
 
-ggplot(distances_long, aes(year, value, group = Name, col = Name)) + 
+p2 <- ggplot(distances_long, aes(year, value, group = Name, col = Name)) + 
   geom_line() + 
-  ylab("Forecasted intensity of age-1 sablefish") + 
+  ylab("Forecasted CPUE of age-1 sablefish") + 
   xlab("Year") + 
   theme_bw() + 
   scale_color_viridis_d(option="magma", begin=0.2, end=0.8, name = "Port")
 
-ggsave("plots/sablefish_spatial_risk.png", width = 7, height = 4)  
+p3 <- gridExtra::grid.arrange(p1, p2, ncol = 1)
+
+ggsave(p3, filename = "plots/sablefish_spatial_risk.png", width = 7, height = 6)  
 

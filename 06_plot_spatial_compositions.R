@@ -29,9 +29,9 @@ for(a in min_age:(max_age - 1)) {
 }
 
 # now convert the 'est' to normalized probabilities across ages
-pred_all <- dplyr::mutate(pred_all, p = plogis(est)) |>
-  dplyr::group_by(X,Y,year) |>
-  dplyr::mutate(p_norm = p / sum(p)) |>
+pred_all <- dplyr::mutate(pred_all, p = exp(est)) |>
+  #dplyr::group_by(X,Y,year) |>
+  #dplyr::mutate(p_norm = p / sum(p)) |>
   dplyr::filter(age %in% ages)
 
 map_data <- rnaturalearth::ne_countries(
@@ -52,9 +52,9 @@ ocean_color <- "#D3EAF2"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 g <- ggplot(coast_proj) + 
-  geom_tile(data = pred_all, aes(x = X * 1000, y = Y * 1000, col = p_norm)) + 
+  geom_tile(data = pred_all, aes(x = X * 1000, y = Y * 1000, col = p)) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "Expected number") +  # legend title 
+  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
   #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
@@ -80,9 +80,9 @@ if(spp_name == "Pacific hake") {
 
 
 g <- ggplot(coast_proj) + 
-  geom_point(data = pred_subset, aes(x = X * 1000, y = Y * 1000, col = p_norm),size=0.05) + 
+  geom_point(data = pred_subset, aes(x = X * 1000, y = Y * 1000, col = p),size=0.05) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "Expected number") +  # legend title 
+  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
   #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +

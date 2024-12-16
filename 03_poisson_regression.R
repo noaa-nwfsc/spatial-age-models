@@ -86,11 +86,11 @@ dplyr::filter(all_coefs) |>
   ggplot(aes(year, x, group=age, col = as.factor(age))) + 
   geom_line() + xlab("Year") + 
   ylab("Estimated random slope") +
-  scale_color_viridis_d(option="magma", begin = 0.2, end = 0.8) + 
+  scale_color_viridis_d(option="magma", begin = 0.2, end = 0.8, name = "Age") + 
   theme_bw() + 
   theme(strip.background = element_rect(fill="white")) + 
   facet_wrap(~species, ncol = 1, scale="free_y")
-ggsave("plots/glm_coefficients.png", width=7, height = 5)
+ggsave("plots/glm_coefficients_time.png", width=7, height = 5)
 
 library(tidyr)
 library(ggplot2)
