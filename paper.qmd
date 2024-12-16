@@ -1,19 +1,23 @@
 ---
-title: "Incorporating spatial distribution at age improves predictive ability of SDMs"
+title: "Advancing spatially explicit fisheries management with age-structured species distribution models"
 format: pdf
+date: "`r Sys.Date()`"
+author: 
+  - name: Eric & Nick
 editor: visual
 bibliography: references.bib
+csl: fish-and-fisheries.csl
 ---
 
 ## Abstract
 
-Species distribution models (SDMs) are widely used in fisheries and ecology, providing insights into species' spatial distributions. While many SDMs incorporate external information, such as environmental or habitat features, the majority overlook age-specific information, despite the known influence of age structure on fish distribution and abundance. Including age information may be particularly valuable for species exhibiting age-related spatial patterns driven by ontogenetic shifts, recruitment dynamics, and selective fishing pressures. Here, we develop an age-structured SDM framework using data from the west coast of the USA, and concentrate on two species with distinct life histories: North Pacific hake (*Merluccius productus*) and sablefish (*Anoplopoma fimbria*). Our framework incorporates spatiotemporal models to predict age-specific distributions. We validate our approach using the recursive nature of age data to forecast the spatial distribution of fish by age class across survey locations in subsequent years; these results highlihght that forecast models have predictive skill (more so for sablefish than hake) and the predictive ability is highest for older age classes. Output from our models can be used to predict the spatial age composition, which may be particularly useful for large cohorts (hake from 2010 and 2014 cohorts; sablefish from 2013, 2016, and 2020 cohorts). Our approach is applicable to a wide range of survey types and platforms around the world, and supports the development of spatially explicit management strategies and optimal allocation of fishing effort.
+Species distribution models (SDMs) are widely used in fisheries and ecology, providing insights into species' spatial distributions. While many SDMs incorporate external information, such as environmental or habitat features, the majority overlook age-specific information, despite the known influence of age structure on fish distribution and abundance. Including age information may be particularly valuable for species exhibiting age-related spatial patterns driven by ontogenetic shifts, recruitment dynamics, and selective fishing pressures. Here, we develop an age-structured SDM framework using data from the west coast of the USA, and concentrate on two species with distinct life histories: North Pacific hake (*Merluccius productus*) and sablefish (*Anoplopoma fimbria*). Our framework uses spatiotemporal models to predict age-specific distributions. We validate our approach using the recursive nature of age data to forecast the spatial distribution of fish by age class across survey locations in subsequent years; these results highlight that forecast models have predictive skill (more so for sablefish than hake) and the predictive ability is highest for older age classes. Output from our models can be used to predict the spatial age composition, which may be particularly useful for identifying large cohorts (hake from 2010 and 2014 cohorts; sablefish from 2013, 2016, and 2020 cohorts). Using predictions of age-1 sablefish as an example, we also demonstrate how our models may be used to forecast future bycatch risk, helping increase the efficiency of fisheries. Our framework is applicable to a wide range of survey types and platforms around the world, and supports the development of spatially explicit management strategies and optimal allocation of fishing effort.
 
 ## Introduction
 
 Species distribution models (SDMs) are widely used in marine ecology to understand and predict the spatial distribution of species based on environmental and demographic variables [@melo-merino2020]. These models have informed management decisions for conservation and resource allocation, especially in the face of changing environmental conditions and human impacts, such as fishing pressure [@guisan2005; @elith2009]. Recent advances in SDM applications in the marine environment have incorporated external drivers such as temperature [@fredston2021], habitat [@phillips2017; @laman2018]. A second use of these models has been to predict temporal trends in species biomass from spatiotemporal fisheries independent survey data [@thorson2015]. Trends estimated from SDMs may be included in integrated population models (stock assessments) for commercially fished species, or used to identify risks to populations of conservation concern. Recent developments in these models have included depth [@johnson2019] and habitat variables [@cao2017] to improve trend estimation.
 
-While many SDMs around the world have included variables such as temperature, depth, or habitat, they have generally overlooked age structure, and instead modeled either species occurrences or densities across all age or size classes. Omitting information on age or size may be partially dependent on data availability (ageing fish generally requires sampling otoliths, which increases monetary costs of sampling programs), but may also be driven by the modeling choices of analysts. Much of the previous research around the world has demonstrated that age structure is a fundamental characteristic of fish populations, influencing spatial distribution and abundance due to mechanisms like ontogenetic shifts, recruitment variability, and selective fishing pressures [@rijnsdorp2018]. Ignoring age-specific information in SDMs may lead to incomplete or inaccurate predictions, especially for species with strong age-related spatial gradients.
+While many SDMs around the world have included variables such as temperature, depth, or habitat, they have generally overlooked age structure, and instead modeled either species occurrences or densities across all age or size classes. Omitting information on age or size may be partially dependent on data availability (ageing fish generally requires sampling otoliths, which increases monetary costs of sampling programs), but may also be driven by the modeling choices of analysts. Much of the previous research around the world has demonstrated that age structure is a fundamental characteristic of fish populations, influencing spatial distribution and abundance due to mechanisms like ontogenetic shifts, recruitment variability, and selective fishing pressures [@rijnsdorp2018]. Recent work has also highlighted that age-based SDMs can improve understanding of environmental drivers on commercially valuable populations [@ono2024]. Ignoring age-specific information in SDMs may lead to incomplete or inaccurate predictions, especially for species with strong age-related spatial gradients.
 
 Incorporating age structure into SDMs may provide more accurate predictions by capturing spatial and temporal variability related to life history traits, age-specific habitat preferences, and population dynamics. Fish often exhibit ontogenetic shifts, where younger individuals occupy different habitats than adults due to factors like predator avoidance, habitat preferences, and diet changes [@werner1984; @ciannelli2004]. These shifts can create age-specific distributions across habitats, particularly for species that undergo distinct life history phases. Additionally, recruitment pulses and migration patterns vary by age, influencing the spatial distribution of younger versus older fish. Fishing selectivity further accentuates these patterns by disproportionately removing older age classes, which alters the population structure and potentially shifts spatial distributions [@hilborn1992; @methot2013]. By incorporating age, SDMs could better predict these dynamics and improve our understanding of species-environment relationships.
 
@@ -29,25 +33,25 @@ On the west coast of the USA, the West Coast Groundfish Bottom Trawl Survey (WCG
 
 ### Spatial age models
 
-For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 -- 5, and for sablefish ages 0 -- 9 (data from these ages represented 54% and 75% of the total aged fish, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. Individual fish were aggregated at the haul level, allowing us to model counts at age. We initially explored modeling counts with a Poisson or Negative Binomial distribution, but as the distributions of numbers at age are dominated by 0s, these models failed to converge. Instead, we summarized the total number of fish sampled and number of fish sampled of the focal age; this allowed counts to be modeled as a binomial family (logit link). Second, we constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
+For each species, we filtered by sex to focus on females and truncated ages to focus on those with the highest data availability; for hake this included ages 1 -- 5, and for sablefish ages 0 -- 9 (data from these ages represented 54% and 75% of the total aged fish, respectively). For each species - age combination, we constructed a unique spatiotemporal model fit to all years except the last available year for each species. We adopted this approach instead of modeling ages simultaneously [@ono2024], because this framework allows greater flexibility (e.g. unique autocorrelation and spatial variance parameters by age). Individual fish were aggregated at the haul level, allowing us to model counts at age with a Poisson distribution. We constructed a spatiotemporal model as an extension of Generalized Linear Mixed Models (GLMMs) such that the prediction in location $s$ and time $t$ can be written as
 
 $$
 \begin{aligned}
-logit \left( p_{\boldsymbol{s},t} \right) &= \boldsymbol{\beta_{t}} + \omega_{\boldsymbol{s}} + \delta_{\boldsymbol{s},t}
+log \left( u_{\boldsymbol{s},t} \right) &= \boldsymbol{\beta_{t}} + \omega_{\boldsymbol{s}} + \delta_{\boldsymbol{s},t}
 \end{aligned}
 $$
 
 where $\boldsymbol{\beta_{t}}$ represent time - varying intercepts modeled as a random walk $\boldsymbol{\beta_{t}} \sim N \left( \boldsymbol{\beta_{t-1}}, \sigma_\beta \right)$, the spatial field $\boldsymbol{\omega_{s}} \sim \operatorname{MVNormal} \left( \boldsymbol{0}, \boldsymbol{\Sigma}_\omega \right)$ and the spatiotemporal fields $\delta_{\boldsymbol{s},t}$ are modeled as an AR(1) process $\boldsymbol{\delta}_{t} = \rho \boldsymbol{\delta}_{t-1} + \sqrt{1 - \rho^2} \boldsymbol{\epsilon_{t}}$, where $\boldsymbol{\epsilon_{t}} \sim \operatorname{MVNormal} \left(\boldsymbol{0}, \boldsymbol{\Sigma}_{\epsilon} \right)$
 
-Spatial and spatiotemporal random fields were constructed as Gaussian Markov random fields (GMRFs) using the stochastic partial differential equation approach (SPDE) [@lindgren2011; @lindgren2015]. The SPDE method models the spatial correlation between points as a Matérn covariance function with smoothness parameter $\nu = 1$. Spatial meshes for all ages and species were constructed with a cutoff distance of 50km (this distance controls the spacing of mesh vertices). Parameter estimation was done using the sdmTMB software package [@Anderson2024] with R 4.3.1 [@rcore2024]. The sdmTMB package relies on Template Model Builder (TMB)[@kristensen2016] to quickly and efficiently maximize the marginal log likelihood using auto-differentiation and the Laplace approximation to integrate out random effects. Models were evaluated for convergence (positive-definite Hessian matrix, and a maximum absolute log likelihood gradient \< 0.001) and residuals diagnostics were evaluated with the DHARMa package [@dharma2022].
+Spatial and spatiotemporal random fields were constructed as Gaussian Markov random fields (GMRFs) using the stochastic partial differential equation approach (SPDE) [@lindgren2011; @lindgren2015]. The SPDE method models the spatial correlation between points as a Matérn covariance function with smoothness parameter $\nu = 1$. Spatial meshes for all ages and species were constructed with a cutoff distance of 50km (this distance controls the spacing of mesh vertices). Parameter estimation was done using the sdmTMB software package [@Anderson2024] with R 4.3.1 [@rcore2024]. The sdmTMB package relies on Template Model Builder (TMB)[@kristensen2016] to quickly and efficiently maximize the marginal log likelihood using auto-differentiation and the Laplace approximation to integrate out random effects. Models were evaluated for convergence (positive-definite Hessian matrix, and a maximum absolute log likelihood gradient \< 0.001) and residuals diagnostics were evaluated with the DHARMa package [@dharma2022]. Code and data to replicate our analysis is publicly available on Github, <https://github.com/ericward-noaa/spatial-age-models>.
 
 ### Validating future predictive ability
 
-As a first validation, we leveraged the natural recursive element of our data to quantify the ability of our models to predict the future distribution of ages. For each of the species - age models constructed above, we made predictions to the survey locations in the following year (e.g. age 3 hake in years 2007 -- 2018 used to predict the distribution of age 4 hake in 2008 -- 2019). We related the predictions $\hat{p}_{\boldsymbol{s},t}$ to observations by multiplying predictions by the total number of fish sampled for ageing, $\hat{n}_{s,t} = N_{s,t} \cdot \hat{p}_{\boldsymbol{s},t}$. We quantified the relationship between predictions and observations by fitting a simple Poisson GLM, where counts of fish of age $a+1$ in year $t+1$ were treated as the response and $log(\lambda_{s,t}) = \beta_{0} + \beta_{1} \cdot log \left( \hat{n}_{s,t} \right)$. The exponentiated slope parameter $exp(\beta_{1})$ represents a change in expected counts that would be expected from a 1-unit change in $log(\hat{n}_{s,t})$, and can roughly be interpreted as an estimate of relative survival. As a diagnostic check and to understand whether there was a potential time component, we fit a second model as a GLMM with R package glmmTMB; this second model was identical to our Poisson GLM with random effects in $\beta_{0}$ and $\beta_{1}$, where year was used as the grouping variable.
+As a first validation, we leveraged the natural recursive element of our data to quantify the ability of our models to predict the future distribution by age. For each of the species - age models constructed above, we made predictions to the survey locations in the following year (e.g. age 3 hake in years 2007 -- 2018 was used to predict the distribution of age 4 hake in 2008 -- 2019). We related the predictions $\hat{u}_{\boldsymbol{s},t}$ to observations by multiplying predictions by the total number of fish sampled for ageing, $\hat{n}_{s,t} = N_{s,t} \cdot \hat{u}_{\boldsymbol{s},t}$. We quantified the relationship between predictions and observations by fitting a simple Poisson GLM, where counts of fish of age $a+1$ in year $t+1$ were treated as the response and $log(\lambda_{s,t}) = \beta_{0} + \beta_{1} \cdot log \left( \hat{n}_{s,t} \right)$. The exponentiated slope parameter $exp(\beta_{1})$ represents a change in expected counts that would be expected from a 1-unit change in $log(\hat{n}_{s,t})$, and can roughly be interpreted as an estimate of relative survival. As a diagnostic check and to understand whether there was potential temporal patterns in the response, we fit a second model as a GLMM with R package glmmTMB [@brooks2017]; this second model was identical to our Poisson GLM with random effects in $\beta_{0}$ and $\beta_{1}$, where year was used as the grouping variable.
 
 ### Using predictions to quantify bycatch risk
 
-To illustrate potential benefits of this kind of modeling, we used the above approach to generate spatiotemporal predictions of age-1 sablefish (from age-0 sablefish the year prior). \[Need some text here on background why sablefish as bycatch is important\]. Gridded predictions from the Poisson GLM represent the expected number of fish per unit of effort in each location. To turn these into a more useful measure of risk, we calculate the total number of age-1 sablefish per unit of effort within a given radius of major fishing ports on the US west coast. For consistency with previous work \[TODO: cite ESR\] we used a radius of 232km.
+To illustrate potential benefits to fisheries management, we used output from our models to generate spatiotemporal predictions of age-1 sablefish (from age-0 sablefish the year prior). \[Need some text here on background why sablefish as bycatch is important. In 2017 for example, the at-sea whiting fishery had 50 mt of sablefish quota set aside in the area north of 36 deg N, but the fleet caught more than 3x as much\]. Gridded predictions from the Poisson GLM represent the expected number of fish per unit of effort in each location. To turn these into a potentially more useful measure of risk, we calculate the predicted total age-1 sablefish catch per unit of effort (CPUE) within a given radius of major fishing ports on the US west coast. For consistency with previous work \[TODO: cite ESR\] we used a radius of 232km. These predictions of port-level CPUE were then summarized as annual time series (1-step ahead forecasts).
 
 ## Results
 
@@ -57,18 +61,33 @@ Estimates of age composition by year may be useful in tracking the distribution 
 
 When comparing the spatial and spatiotemporal parameters across ages and species, we find that for most ages, there is a decrease in the estimated spatial and spatiotemporal variances as well as a decrease in the spatial range (@fig-spatial-parameters). Spatial and spatiotemporal variances control the magnitude of the peaks and valleys in estimated latent fields, meaning that spatial fields estimated for older fish are less variable. Similarly, the spatial range determines the distance at which locations are functionally independent (for the Matern, $\rho$ \~ 0.13). The decline in range with age implies that spatial distributions also become more concentrated as a function of age (@fig-spatial-parameters).
 
-Our 1-step ahead validation analyses indicate that there is a stronger association between older ages compared to younger ages, and this effect is strongest for sablefish (@fig-glm-coefficients). When comparing our initial Poisson GLM to a more complicated GLMM with random year effects in the intercept and slope, we found little support for shared correlations across age classes of a given species. Shared correlations would indicate for example that age-2 and age-3 sablefish may be more or less predictable in certain years (indicating that information about one age class may be useful in predicting another). With the exception of a strong positive correlation between age-0 and age-1 sablefish (\$\$)
+Our 1-step ahead validation analyses indicate that there is a stronger association between older ages compared to younger ages, and this effect is strongest for sablefish (@fig-glm-coefficients). When comparing our initial Poisson GLM to a more complicated GLMM with random year effects in the intercept and slope, we found little support for shared correlations across age classes of a given species. Shared correlations would indicate for example that age-2 and age-3 sablefish may be more or less predictable in certain years (indicating that information about one age class may be useful in predicting another). With the exception of a strong positive correlation between age-0 and age-1 sablefish, most correlations between age classes were smaller than 0.3 in magnitude (@fig-glm-coefficients-time).
 
-Figure @fig-bycatch-risk aggregates occurrence probabilities for age 0 - 2 sablefish, potentially useful to identify hotspots
-
-Similarly Figure @fig-age5-sablefish shows occurrence probabilities for age 5 sablefish
+Our forecasts of age-1 sablefish CPUE illustrates the variability of potential bycatch risk in space and time. In most years for example, age-1 CPUE is lowest in ports in the state of California (Eureka, Fort Bragg, Morro Bay) and highest in several ports in the state of Oregon (Astoria, Coos Bay, @fig-bycatch-risk). These results also illustrate the high temporal variability in age-1 CPUE, with peaks occuring in 2009, 2014, 2017, and 2021, @fig-bycatch-risk). During peak years, there is also variability among ports – forecasts of age-1 CPUE were similar for Astoria and Coos Bay in 2021 for instance, but the potential bycatch risk near Astoria was higher in 2017 (@fig-bycatch-risk).
 
 ## Discussion
 
-#### Limitations
+In this study, we developed an age-structured species distribution modeling (SDM) framework to explore spatial age composition and predict age-specific distributions of two commercially important fish species with different life history characteristics: North Pacific hake and sablefish. Our approach integrates spatiotemporal dynamics, age structure, and forward-predictive capabilities, providing a useful tool for fisheries management. By examining age-specific patterns in spatial distributions and validating predictive skill, we highlight the potential utility of incorporating age structure into SDMs for advancing spatially explicit fisheries management.
 
--   not predicting abundance (N) -- just proportions
--   We constructed single-age models, and this could be done in a multivariate (multinomial) framework -- but our approach allows for greater flexibility in letting relationships change by age. Tradeoff is that it doesn't impose sum to 1 constraint, binomials are independent
+#### *Age-Structured Spatial Patterns*
+
+Results from our age-structured spatial models underscore the importance of accounting for age in SDMs. The spatial patterns observed for both hake and sablefish were consistent with their distinct life histories, supporting the idea that ontogenetic shifts significantly influence fish distributions. Younger age classes of hake and sablefish exhibited broader distributions generally in shallower areas, while older individuals were more concentrated offshore (sablefish in deeper waters, hake in more northern regions). The deeper distribution of older sablefish reflects their preference for benthic habitats, while the observed north-south gradient in older hake aligns with known migratory behaviors influenced by spawning and feeding grounds [@agostini2006].
+
+#### *Predictive skill and cohort tracking*
+
+Our validation analyses revealed that the predictive skill of our framework increases with age, particularly for sablefish. This result is intuitive given that older age classes generally exhibit more stable spatial patterns due to reduced recruitment variability and more predictable habitat preferences. In contrast, the lower predictive skill for younger age classes reflects their higher spatiotemporal variability, likely driven by recruitment pulses and early-life survival dynamics. Tracking cohorts through time using our framework proved effective in identifying strong year classes, such as the 2010 and 2014 hake cohorts and the 2013, 2016, and 2020 sablefish cohorts. Identifying these cohorts may be useful to stock assessment and management – for instance, understanding the spatial distribution of strong cohorts could be used to inform spatial harvest allocation. Additionally, the ability to project spatial age composition provides a tool for assessing how environmental changes, such as ocean warming or habitat shifts, may impact the distribution of key cohorts over time.
+
+#### *Managing bycatch risk*
+
+Our case study on age-1 sablefish demonstrates the practical utility of our modeling for mitigating bycatch risk. Forecasts of CPUE for age-1 sablefish revealed significant temporal and spatial variability, with higher bycatch risk near Oregon ports in certain years. Importantly, these forecasts could be provided to industry partners and fisheries managers 6 – 12 months before fishing occurs. Such information could help fishers avoid areas associated with high bycatch risk, or be used to adjust the spatial distribution of quota in certain years. The observed peaks in age-1 sablefish CPUE during certain years suggest the influence of recruitment pulses, which are thought to be tied to environmental drivers [@tolimieri2018]. Future efforts could also incorporating environmental covariates to enhance its predictive accuracy and further support climate-resilient fisheries management.
+
+#### Need for reliable age data
+
+Perhaps the biggest challenge in implementing our modeling framework in the future is that these models depend on reliable age data being collected. While the WCGBTS provides a robust dataset, gaps in sampling (e.g., the absence of a 2020 survey due to the COVID-19 pandemic) and variability in otolith aging efforts over time could introduce uncertainty. The costs of ship-based surveys, such as the WCGBTS survey, have increased around the world, and numerous efforts are being implemented to make these programs more efficient [@ices2020]. While age samples are more expensive to collect than length information, there is also increased precision associated with age data.
+
+#### Future directions
+
+Our age-structured SDM framework represents a significant advance in spatial modeling, offering novel insights into the dynamics of fish populations and their age-specific distributions. From a management perspective, age-structured SDMs offer a powerful tool for addressing critical challenges, including bycatch mitigation, spatial planning, and sustainable harvesting. By providing high-resolution predictions of spatial age composition, these models enable managers to align fishing effort with ecological and economic goals, ensuring the long-term sustainability of marine resources. Future research could extend this framework by incorporating environmental covariates, such as temperature or oxygen, to account for dynamic habitat preferences, or fisheries removals to account for local depletion [@ono2016]. Additionally, exploring the potential for multi-species models could provide insights into ecosystem-level interactions and their influence on spatial distributions.
 
 \newpage
 
@@ -84,13 +103,13 @@ knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
 
 \newpage
 
-```{r label="fig-hake-spatial-composition", fig.cap="Estimated spatial composition for Pacific hake; rows represent strong cohorts in our dataset (2010, 2014) and columns represent predictions for ages 1 - 5. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
+```{r label="fig-hake-spatial-composition", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent strong cohorts in our dataset (2010, 2014) and columns represent predictions for ages 1 - 5. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
 knitr::include_graphics("plots/spatial_composition_subset_Pacific hake.png")
 ```
 
 \newpage
 
-```{r label="fig-sablefish-spatial-composition", fig.cap="Estimated spatial composition for sablefish; rows represent strong cohorts in our dataset (2013, 2016, 2019) and columns represent predictions for ages 0 - 4. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
+```{r label="fig-sablefish-spatial-composition", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; rows represent strong cohorts in our dataset (2013, 2016, 2019) and columns represent predictions for ages 0 - 4. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
 knitr::include_graphics("plots/spatial_composition_subset_sablefish.png")
 ```
 
@@ -104,14 +123,8 @@ knitr::include_graphics("plots/glm_coefficients.png")
 
 \newpage
 
-```{r label="fig-bycatch-risk", fig.cap="Estimated probability of occurrence for age 0 -- 2 sablefish.", echo=FALSE}
+```{r label="fig-bycatch-risk", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for age-1 sablefish and port-level forecasts of age-1 CPUE within a radius of 232 km.", echo=FALSE}
 knitr::include_graphics("plots/sablefish_spatial_risk.png")
-```
-
-\newpage
-
-```{r label="fig-age5-sablefish", fig.cap="Estimated probability of occurrence for age 5 sablefish.", echo=FALSE}
-knitr::include_graphics("plots/sablefish_spatial_age5.png")
 ```
 
 \newpage
@@ -122,15 +135,21 @@ knitr::include_graphics("plots/spatial_parameters.png")
 
 \newpage
 
-```{r label="fig-hake-spatial-composition-all", fig.cap="Estimated spatial composition for Pacific hake; rows represent years and columns represent predictions for ages 1 - 5.", echo=FALSE}
+```{r label="fig-hake-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent years and columns represent predictions for ages 1 - 5.", echo=FALSE}
 knitr::include_graphics("plots/spatial_composition_Pacific hake.png")
 ```
 
 \newpage
 
-```{r label="fig-sablefish-spatial-composition-all", fig.cap="Estimated spatial composition for sablefish; rows represent years and columns represent predictions for ages 0 - 4.", echo=FALSE}
+```{r label="fig-sablefish-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; rows represent years and columns represent predictions for ages 0 - 4.", echo=FALSE}
 
 knitr::include_graphics("plots/spatial_composition_sablefish.png")
+```
+
+\newpage
+
+```{r label="fig-glm-coefficients-time", fig.cap="Time-varying coefficients (with random effects in year) relating predicted densities of age a fish in year t to observed numbers the following year. ", echo=FALSE}
+knitr::include_graphics("plots/glm_coefficients_time.png")
 ```
 
 ```{=tex}
