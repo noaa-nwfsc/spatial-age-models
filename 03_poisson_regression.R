@@ -69,14 +69,14 @@ for(spp in 1:2) {
   }
 }
 
-ggplot(all_output, aes(age, mean, col = species)) + 
-  geom_hline(aes(yintercept=0), col="red", alpha=0.3) + 
-  geom_pointrange(aes(ymin = lower, ymax = upper), position=position_dodge(0.4)) + 
+ggplot(all_output, aes(age, exp(mean), col = species)) + 
+  geom_hline(aes(yintercept=1), col="red", alpha=0.3) + 
+  geom_pointrange(aes(ymin = exp(lower), ymax = exp(upper)), position=position_dodge(0.4)) + 
   geom_point(position=position_dodge(0.4)) + 
-  scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  scale_color_viridis_d(option="magma", begin=0.2, end = 0.8, name="Species") +
   xlab("Age") + 
   ylab("Estimated slope") + 
-  coord_flip() + theme_bw()
+  theme_bw()
 
 ggsave("plots/glm_coefficients.png", width=6, height = 5)
 

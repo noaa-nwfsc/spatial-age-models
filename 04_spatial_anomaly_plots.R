@@ -55,32 +55,35 @@ utm_zone10 <- 3157
 coast_proj <- sf::st_transform(coast, crs = utm_zone10)
 
 # Define the new colors
-land_color <- "#E0CDA9"  # beige for land
-ocean_color <- "#D3EAF2"  # grayish blue for ocean
+land_color <- "wheat3"  # beige for land
+ocean_color <- "grey80"  # grayish blue for ocean
 
+library(scales)
 # Plot coast with custom land and ocean colors
 ggplot(coast_proj) + 
   geom_point(data = hake, aes(x = X * 1000, y = Y * 1000, col = omega_s), size=0.02) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_gradient2(name = "Anomaly") +  # legend title 
+  scale_color_gradient2(name = "Anomaly",low = scales::muted("blue"), mid = "white", high = scales::muted("red"), midpoint = 0) +  # legend title 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
         strip.text = element_text(color = "black"),  # Set facet label text color to black
-        strip.background = element_rect(fill = "white")) +  # Set facet label background to white
+        strip.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +  # Set facet label background to white
   facet_wrap(~age, nrow = 1)
-ggsave("plots/hake_spatial_anomalies.png", width = 7, height = 4)  
+ggsave("plots/hake_spatial_anomalies.png", width = 7, height = 5)  
   
 
 ggplot(coast_proj) + 
   geom_point(data = sablefish, aes(x = X * 1000, y = Y * 1000, col = omega_s), size=0.02) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_gradient2(name = "Anomaly") +  # legend title 
+  scale_color_gradient2(name = "Anomaly",low = scales::muted("blue"), mid = "white", high = scales::muted("red"), midpoint = 0) +  # legend title 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
         strip.text = element_text(color = "black"),  # Set facet label text color to black
-        strip.background = element_rect(fill = "white")) +  # Set facet label background to white
+        strip.background = element_rect(fill = "white"),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +  # Set facet label background to white
   facet_wrap(~age, nrow = 2)
 ggsave("plots/sablefish_spatial_anomalies.png", width = 7, height = 8)  
 

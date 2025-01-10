@@ -47,15 +47,15 @@ utm_zone10 <- 3157
 coast_proj <- sf::st_transform(coast, crs = utm_zone10)
 
 # Define the new colors
-land_color <- "#E0CDA9"  # beige for land
-ocean_color <- "#D3EAF2"  # grayish blue for ocean
+land_color <- "wheat3"  # beige for land
+ocean_color <- "grey80"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 g <- ggplot(coast_proj) + 
-  geom_tile(data = pred_all, aes(x = X * 1000, y = Y * 1000, col = p)) + 
+  geom_tile(data = dplyr::filter(pred_all, p <= quantile(pred_all$p,0.999)), aes(x = X * 1000, y = Y * 1000, col = p)) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
-  #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
+  #scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
+  scale_color_gradient2(name = "CPUE", trans = "sqrt", low = "white", high = scales::muted("red")) + 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
@@ -80,10 +80,9 @@ if(spp_name == "Pacific hake") {
 
 
 g <- ggplot(coast_proj) + 
-  geom_point(data = pred_subset, aes(x = X * 1000, y = Y * 1000, col = p),size=0.05) + 
+  geom_point(data = dplyr::filter(pred_subset, p <= quantile(pred_subset$p,0.999)), aes(x = X * 1000, y = Y * 1000, col = p),size=0.05) + 
   geom_sf(fill = land_color) +  # Set land color
-  scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
-  #scale_color_gradient2(name = "Centered \n Pr(occurrence)") + 
+  scale_color_gradient2(name = "CPUE", high = scales::muted("red")) +  # legend title 
   theme_light() + 
   labs(x = "Longitude", y = "Latitude") +
   theme(panel.background = element_rect(fill = ocean_color),  
