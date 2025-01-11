@@ -37,7 +37,7 @@ land_color <- "wheat3"  # beige for land
 ocean_color <- "grey80"  # grayish blue for ocean
 
 p1 <- ggplot(coast_proj) + 
-  geom_point(data = dplyr::filter(sablefish, p <= quantile(sablefish$p,0.999)), aes(x = X * 1000, y = Y * 1000, col = p), size = 0.02) + 
+  geom_point(data = dplyr::filter(sablefish, p <= quantile(sablefish$p,0.99)), aes(x = X * 1000, y = Y * 1000, col = p), size = 0.02) + 
   #scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
   scale_color_gradient2(name = "CPUE", low="white", high=scales::muted("red"), trans="sqrt") + 
   geom_sf(fill = land_color) +  # Set land color
