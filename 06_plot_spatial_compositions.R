@@ -1,7 +1,7 @@
 library(tidyverse)
 library(ggplot2)
 
-spp_name <- c("Pacific hake", "sablefish")[2]
+spp_name <- c("Pacific hake", "sablefish")[1]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
@@ -52,7 +52,7 @@ ocean_color <- "grey80"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 g <- ggplot(coast_proj) + 
-  geom_tile(data = dplyr::filter(pred_all, p <= quantile(pred_all$p,0.999)), aes(x = X * 1000, y = Y * 1000, col = p)) + 
+  geom_tile(data = dplyr::filter(pred_all, p <= quantile(pred_all$p,0.99)), aes(x = X * 1000, y = Y * 1000, col = p)) + 
   geom_sf(fill = land_color) +  # Set land color
   #scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
   scale_color_gradient2(name = "CPUE", trans = "sqrt", low = "white", high = scales::muted("red")) + 
@@ -80,7 +80,7 @@ if(spp_name == "Pacific hake") {
 
 
 g <- ggplot(coast_proj) + 
-  geom_point(data = dplyr::filter(pred_subset, p <= quantile(pred_subset$p,0.999)), aes(x = X * 1000, y = Y * 1000, col = p),size=0.05) + 
+  geom_point(data = dplyr::filter(pred_subset, p <= quantile(pred_subset$p,0.99)), aes(x = X * 1000, y = Y * 1000, col = p),size=0.05) + 
   geom_sf(fill = land_color) +  # Set land color
   scale_color_gradient2(name = "CPUE", high = scales::muted("red")) +  # legend title 
   theme_light() + 
