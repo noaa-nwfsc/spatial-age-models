@@ -52,7 +52,9 @@ ocean_color <- "grey80"  # grayish blue for ocean
 
 # Plot coast with custom land and ocean colors
 g <- ggplot(coast_proj) + 
-  geom_tile(data = dplyr::filter(pred_all, p <= quantile(pred_all$p,0.99)), aes(x = X * 1000, y = Y * 1000, col = p)) + 
+  geom_tile(data = dplyr::filter(pred_all, 
+                          p <= quantile(pred_all$p,0.99)), 
+                          aes(x = X * 1000, y = Y * 1000, col = p)) + 
   geom_sf(fill = land_color) +  # Set land color
   #scale_color_viridis(option="magma", begin = 0.2, end = 0.8, name = "CPUE", trans="sqrt") +  # legend title 
   scale_color_gradient2(name = "CPUE", trans = "sqrt", low = "white", high = scales::muted("red")) + 
@@ -63,6 +65,8 @@ g <- ggplot(coast_proj) +
         strip.background = element_rect(fill = "white"),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +  # Set facet label background to white
   facet_grid(age ~ year)
+
+g
 
 ggsave(g, filename = paste0("plots/spatial_composition_",spp_name,".png"), height = 7, width = 7)
 
