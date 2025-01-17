@@ -14,7 +14,7 @@ library(ggpubr)
 home_dir = getwd()
 fig_dir = paste0(home_dir,"/plots/")
 
-spp_name <- c("Pacific hake", "sablefish")[2]
+spp_name <- c("Pacific hake", "sablefish")[1]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
@@ -73,11 +73,11 @@ dist_maps <- function(dfile,
   
   # scale data to 0-1 for each year 
   
-  if(scalebiomass = TRUE){
+  if(scalebiomass == TRUE){
     dmean = dfile %>%
             group_by(year) %>%
-            summarise(maxp = max(p))
-    #slow
+            summarise(maxp = max(p, na.rm = T))
+    # slow
     dfile = left_join(dfile, dmean)
     dfile$p = dfile$p/dfile$maxp
   }
@@ -117,18 +117,19 @@ dist_maps <- function(dfile,
     return(plotx)
 }
 
-m0 = dist_maps(pred_all[pred_all$age==0,])
-# print(m0)
 
+# print(m0)
 m1 = dist_maps(pred_all[pred_all$age==1,])
 m2 = dist_maps(pred_all[pred_all$age==2,])
 m3 = dist_maps(pred_all[pred_all$age==3,])
 m4 = dist_maps(pred_all[pred_all$age==4,])
 
-
-
-ggarrange(m0,m1,m2,m3,m4,
-          nrow = 5)
+if(spp_name=="sablefish"){
+  m0 = dist_maps(pred_all[pred_all$age==0,])
+  ggarrange(m0,m1,m2,m3,m4, nrow = 5)}
+if(spp_name=="Pacific hake"){
+  m5 = dist_maps(pred_all[pred_all$age==5,])
+  ggarrange(m1,m2,m3,m4, m5, nrow = 5)}
 
 ggsave( paste0(fig_dir ,"Map-",spp_name,"-year.png"), width = 6.2, height = 8)
 
@@ -140,15 +141,26 @@ if(spp_name == "sablefish"){
   y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117))
   y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117))
   y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
-  y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
+  #y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
 
-  ggarrange(y2008, y2010, y2016,y2021,nrow = 4)
+  ggarrange(y2008, y2010, y2016,y2021,nrow = 3)
 
   ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
 }
 
 
 
+# hake
+if(spp_name == "Pacific hake"){
+  y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117))
+  y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117))
+  y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
+  #y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
+  
+  ggarrange(y2008, y2010, y2016,y2021,nrow = 3)
+  
+  ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
+}
 
 
 
