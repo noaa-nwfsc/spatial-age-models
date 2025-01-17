@@ -62,20 +62,46 @@ west_coast <- subset(states, region %in% c("california", "oregon", "washington")
 ################################################################################
 
 # plot function
-dist_maps <- function(dfile, xlim = c(-185, -117)) {
+dist_maps <- function(dfile, 
+                      xlim = c(-185, -117), 
+                      midp = NA, 
+                      trans = 'identity',
+                      scalebiomass = T) {
+  # data preparation
+  # dfile = pred_all[pred_all$age==1,]
+  dfile = dplyr::filter(dfile, p <= quantile(dfile$p,0.99))
   
-  prob_map <- ggplot(data=west_coast, aes(x = long, y = lat), 
-                   fill = grey(0.9), color = "black") +
+  # scale data to 0-1 for each year 
+  
+  if(scalebiomass = TRUE){
+    dmean = dfile %>%
+            group_by(year) %>%
+            summarise(maxp = max(p))
+    #slow
+    dfile = left_join(dfile, dmean)
+    dfile$p = dfile$p/dfile$maxp
+  }
+  
+  
+  # set midpoing for color ramp
+  if(is.na(midp)==T){midp = 0.1*max(dfile$p)}
+  # begin plotting
+  plotx <- 
+    ggplot(data=west_coast, aes(x = long, y = lat), 
+                 fill = grey(0.9), color = "black") +
     geom_polygon(aes(x = long, y = lat, group=group), 
                fill = grey(0.9), color = "black") +
-    geom_point(data=dplyr::filter(dfile, 
-                                  p <= quantile(dfile$p,0.99)) , 
+    geom_point(data=dfile , 
                aes(lon2, lat, color=p), size=0.01) +
     # might need to adjust here based on the scale of the data, esp 'trans' term.
     # scale_color_viridis_c(option = 'turbo', direction = 1,  
     #                     name='CPUE') +
-    scale_color_gradient2(name = "CPUE", trans = "identity", 
-                          low = "white", high = scales::muted("red")) + 
+    scale_color_gradient2(name = "CPUE", 
+                          transform = trans, 
+                          low = scales::muted("black"),
+                          midpoint = midp,
+                          #high = 'red')+
+                          high = scales::muted("red")) + 
     coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
     # might need to adjust x-axes to plot all data
     scale_x_continuous(breaks = seq(-180,-120,axis.mod ), 
@@ -88,7 +114,7 @@ dist_maps <- function(dfile, xlim = c(-185, -117)) {
         legend.title = element_text(size = 8),
         legend.text = element_text(size = 8),
         legend.key.size = unit(1,'lines')) 
-    return(prob_map)
+    return(plotx)
 }
 
 m0 = dist_maps(pred_all[pred_all$age==0,])
