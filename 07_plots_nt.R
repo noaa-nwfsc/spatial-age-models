@@ -71,7 +71,7 @@ dist_maps <- function(dfile,
   # dfile = pred_all[pred_all$age==1,]
   dfile = dplyr::filter(dfile, p <= quantile(dfile$p,0.99))
   
-  # scale data to 0-1 for each year 
+  # scale data to 0-1 for each year ; if decided
   
   if(scalebiomass == TRUE){
     dmean = dfile %>%
@@ -119,16 +119,17 @@ dist_maps <- function(dfile,
 
 
 # print(m0)
-m1 = dist_maps(pred_all[pred_all$age==1,])
-m2 = dist_maps(pred_all[pred_all$age==2,])
-m3 = dist_maps(pred_all[pred_all$age==3,])
-m4 = dist_maps(pred_all[pred_all$age==4,])
+m1 = dist_maps(pred_all[pred_all$age==1,], scalebiomass = F)
+m2 = dist_maps(pred_all[pred_all$age==2,], scalebiomass = F)
+m3 = dist_maps(pred_all[pred_all$age==3,], scalebiomass = F)
+m4 = dist_maps(pred_all[pred_all$age==4,], scalebiomass = F)
 
 if(spp_name=="sablefish"){
-  m0 = dist_maps(pred_all[pred_all$age==0,])
+  m0 = dist_maps(pred_all[pred_all$age==0,], scalebiomass = F)
   ggarrange(m0,m1,m2,m3,m4, nrow = 5)}
+
 if(spp_name=="Pacific hake"){
-  m5 = dist_maps(pred_all[pred_all$age==5,])
+  m5 = dist_maps(pred_all[pred_all$age==5,], scalebiomass = F)
   ggarrange(m1,m2,m3,m4, m5, nrow = 5)}
 
 ggsave( paste0(fig_dir ,"Map-",spp_name,"-year.png"), width = 6.2, height = 8)
@@ -141,9 +142,9 @@ if(spp_name == "sablefish"){
   y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117))
   y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117))
   y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
-  #y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
+  y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
 
-  ggarrange(y2008, y2010, y2016,y2021,nrow = 3)
+  ggarrange(y2008, y2010, y2016, y2021,nrow = 4)
 
   ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
 }
@@ -157,7 +158,7 @@ if(spp_name == "Pacific hake"){
   y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
   #y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
   
-  ggarrange(y2008, y2010, y2016,y2021,nrow = 3)
+  ggarrange(y2008, y2010, y2016,nrow = 3)
   
   ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
 }
