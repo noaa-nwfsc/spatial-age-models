@@ -153,12 +153,12 @@ if(spp_name == "sablefish"){
 
 # hake
 if(spp_name == "Pacific hake"){
-  y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117))
-  y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117))
-  y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
+  y2008 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117))
+  y2010 = dist_maps(pred_all[pred_all$rec_year==2014,],xlim = c(-170, -117))
+  y2014 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117))
   #y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117))
   
-  ggarrange(y2008, y2010, y2016,nrow = 3)
+  ggarrange(y2008, y2010, y2014,nrow = 3)
   
   ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
 }
