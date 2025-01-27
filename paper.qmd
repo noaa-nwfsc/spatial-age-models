@@ -123,7 +123,7 @@ knitr::include_graphics("plots/glm_coefficients.png")
 
 \newpage
 
-```{r label="fig-bycatch-risk", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for age-1 sablefish and port-level forecasts of age-1 CPUE within a radius of 232 km.", echo=FALSE}
+```{r label="fig-bycatch-risk", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for age-1 sablefish and port-level forecasts of age-1 CPUE within a radius of 232 km. In the upper plot CPUE is standardized to 1.0 across cohorts for visualization purposes.", echo=FALSE}
 knitr::include_graphics("plots/sablefish_spatial_risk.png")
 ```
 
