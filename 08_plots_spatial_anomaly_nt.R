@@ -73,10 +73,11 @@ dist_map2 <- function(dfile=sablefish,
   dfile$lon2 = dfile$lon - dfile$yrs
   xmin = floor( min(dfile$lon2))
   # axis label for X
-  x1 = seq(-180,-120,axis.mod )
+  x1 = seq(-179,-119,axis.mod )
   xages = seq(min(dfile$age), no_ages-1,1)
   x2 = rep("", length(x1)-length(xages))
   labelsx = c(x2,xages)
+  xbreaks = rev(rev(x1)[1:length(xages)])
   # set midpoing for color ramp
   if(is.na(midp)==T){midp = 0.1*max(dfile$p)}
   # prep axis
@@ -95,10 +96,10 @@ dist_map2 <- function(dfile=sablefish,
                           mid = "white", 
                           high = scales::muted("red"), 
                           midpoint = midp) +  # legend title 
-     coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
+    coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
     # might need to adjust x-axes to plot all data
-    scale_x_continuous(breaks = seq(-180,-120,axis.mod ), 
-                       minor_breaks = -117:-180, labels = labelsx) +
+    scale_x_continuous(breaks = xbreaks , labels = xages) +
+    #scale_x_continuous(breaks = seq(-179, -119, axis.mod ), labels = labelsx) +
     xlab("Age-class") +
     ylab("Latitude") +
     theme_bw() + 
@@ -111,10 +112,10 @@ dist_map2 <- function(dfile=sablefish,
 
 
 dist_map2(sablefish,no_ages = 10, xlim = c(-152, -117))
-ggsave( paste0(fig_dir,"sablefish-spatial-anomaly.png"), width=6.2, height = 2)
+ggsave( paste0(fig_dir,"sablefish-spatial-anomaly.png"), width=4, height = 2)
 
 dist_map2(hake,no_ages = 6, xlim = c(-140, -117))
-ggsave( paste0(fig_dir,"hake_spatial_anomaly.png"), width=3.2, height = 2)
+ggsave( paste0(fig_dir,"hake_spatial_anomaly.png"), width=3, height = 2)
 
 
 
