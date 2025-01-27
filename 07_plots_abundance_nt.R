@@ -54,7 +54,7 @@ pred_all$rec_year = pred_all$year - pred_all$age
 pred_all$yrs = axis.mod*(pred_all$year-max_year)
 pred_all$lon2 = pred_all$lon + pred_all$yrs
 xmin = floor( min(pred_all$lon2))
-pred_all$p <= quantile(pred_all$p,0.99)
+# pred_all$p <= quantile(pred_all$p,0.99)
 
 # background map info ##########################################################
 states <- map_data("state")

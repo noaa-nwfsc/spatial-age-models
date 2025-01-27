@@ -92,13 +92,13 @@ Our age-structured SDM framework represents a significant advance in spatial mod
 \newpage
 
 ```{r label="fig-hake-spatial-anomaly", fig.cap="Estimated spatial anomalies for Pacific hake ages 1 -- 5. These fields represent the average anomalies across all years, 2003 -- 2023.", echo=FALSE}
-knitr::include_graphics("plots/hake_spatial_anomalies.png")
+knitr::include_graphics("plots/hake_spatial_anomaly.png")
 ```
 
 \newpage
 
 ```{r label="fig-sablefish-spatial-anomaly", fig.cap="Estimated spatial anomalies for sablefish ages 0 -- 9. These fields represent the average anomalies across all years, 2003 -- 2023.", echo=FALSE}
-knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
+knitr::include_graphics("plots/sablefish-spatial-anomaly.png")
 ```
 
 \newpage
