@@ -49,9 +49,9 @@ pred_all <- dplyr::mutate(pred_all, p = exp(est)) |>
 
 # NT Plot ######################################################################
 axis.mod = 3
-max_year = max.year = 2023
+max_year = 2023
 pred_all$rec_year = pred_all$year - pred_all$age
-pred_all$yrs = axis.mod*(pred_all$year-max.year)
+pred_all$yrs = axis.mod*(pred_all$year-max_year)
 pred_all$lon2 = pred_all$lon + pred_all$yrs
 xmin = floor( min(pred_all$lon2))
 pred_all$p <= quantile(pred_all$p,0.99)
@@ -81,8 +81,6 @@ dist_maps <- function(dfile,
     dfile = left_join(dfile, dmean)
     dfile$p = dfile$p/dfile$maxp
   }
-  
-  
   # set midpoing for color ramp
   if(is.na(midp)==T){midp = 0.1*max(dfile$p)}
   # begin plotting
@@ -117,9 +115,15 @@ dist_maps <- function(dfile,
     return(plotx)
 }
 
+# age-class each year ##########################################################
 
 # print(m0)
+# age 1 sablefish for figure 6 ####
+# combine later for fig 6
 m1 = dist_maps(pred_all[pred_all$age==1,], scalebiomass = F)
+ggsave( paste0(fig_dir ,spp_name,"-age-1-year.png"), width = 6.2, height = 2)
+
+# other age classes ####
 m2 = dist_maps(pred_all[pred_all$age==2,], scalebiomass = F)
 m3 = dist_maps(pred_all[pred_all$age==3,], scalebiomass = F)
 m4 = dist_maps(pred_all[pred_all$age==4,], scalebiomass = F)
@@ -132,10 +136,10 @@ if(spp_name=="Pacific hake"){
   m5 = dist_maps(pred_all[pred_all$age==5,], scalebiomass = F)
   ggarrange(m1,m2,m3,m4, m5, nrow = 5)}
 
-ggsave( paste0(fig_dir ,"Map-",spp_name,"-year.png"), width = 6.2, height = 8)
+ggsave( paste0(fig_dir , spp_name,"-age-class-year.png"), width = 6.2, height = 8)
 
 
-################################################################################
+# cohort abundance through time ################################################
 
 # sablefish 
 if(spp_name == "sablefish"){
@@ -146,9 +150,8 @@ if(spp_name == "sablefish"){
 
   ggarrange(y2008, y2010, y2016, y2021,nrow = 4)
 
-  ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
+  ggsave( paste0(fig_dir ,spp_name,"-follow-age-class.png"), width = 6.2, height = 6)
 }
-
 
 
 # hake
@@ -160,15 +163,8 @@ if(spp_name == "Pacific hake"){
   
   ggarrange(y2008, y2010, y2014,nrow = 3)
   
-  ggsave( paste0(fig_dir ,"Map-",spp_name,"-age-class.png"), width = 6.2, height = 6)
+  ggsave( paste0(fig_dir ,spp_name,"-follow-age-class.png"), width = 6.2, height = 6)
 }
-
-
-
-
-
-
-
 
 
 

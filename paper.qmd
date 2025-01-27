@@ -104,13 +104,13 @@ knitr::include_graphics("plots/sablefish_spatial_anomalies.png")
 \newpage
 
 ```{r label="fig-hake-spatial-composition", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent strong cohorts in our dataset (2010, 2014, 2016). CPUE is standardized to 1.0 across cohorts for visualization purposes. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
-knitr::include_graphics("plots/Map-Pacific hake-age-class.png")
+knitr::include_graphics("plots/Pacific hake-follow-age-class.png")
 ```
 
 \newpage
 
 ```{r label="fig-sablefish-spatial-composition", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; each row represents a strong cohorts in our dataset (2008, 2010, 2016, 2021). CPUE is standardized to 1.0 across cohorts for visualization purposes. Full predictions for all cohorts are in the Supplementary Information.", echo=FALSE}
-knitr::include_graphics("plots/Map-sablefish-age-class.png")
+knitr::include_graphics("plots/sablefish-follow-age-class.png")
 ```
 
 \newpage
@@ -136,14 +136,14 @@ knitr::include_graphics("plots/spatial_parameters.png")
 \newpage
 
 ```{r label="fig-hake-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent ages (1-5). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
-knitr::include_graphics("plots/Map-Pacific hake-year.png")
+knitr::include_graphics("plots/Pacific hake-age-class-year.png")
 ```
 
 \newpage
 
 ```{r label="fig-sablefish-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; rows represent ages (0-4). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
 
-knitr::include_graphics("plots/Map-sablefish-year.png")
+knitr::include_graphics("plots/sablefish-age-class-year.png")
 ```
 
 \newpage
