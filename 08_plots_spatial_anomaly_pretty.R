@@ -103,13 +103,15 @@ dist_map2 <- function(dfile=sablefish,
     xlab("Age-class") +
     ylab("Latitude") +
     theme_bw() + 
-    theme(#axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+    theme(axis.text = element_text(size=8),
+          axis.title = element_text(size=8),
           legend.title = element_text(size = 8),
           legend.text = element_text(size = 8),
-          legend.key.size = unit(1,'lines')) 
+          legend.key.size = unit(0.7,'lines')) 
   return(plotx)
 }
 
+fig_dir = paste0(getwd(),"/plots/")
 
 dist_map2(sablefish,no_ages = 10, xlim = c(-152, -117))
 ggsave( paste0(fig_dir,"sablefish-spatial-anomaly.png"), width=4, height = 2)
