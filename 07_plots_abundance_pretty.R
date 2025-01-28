@@ -14,7 +14,7 @@ library(ggpubr)
 home_dir = getwd()
 fig_dir = paste0(home_dir,"/plots/")
 
-spp_name <- c("Pacific hake", "sablefish")[1]
+spp_name <- c("Pacific hake", "sablefish")[2]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
@@ -69,7 +69,7 @@ dist_maps <- function(dfile,
                       scalebiomass = T,
                       x_lab = '',
                       scale_label = 'CPUE',
-                      xadjust = 0) {
+                      xadjust = -3) {
   # data preparation
   # dfile = pred_all[pred_all$age==1,]
   dfile = dplyr::filter(dfile, p <= quantile(dfile$p,0.99))
@@ -105,8 +105,8 @@ dist_maps <- function(dfile,
                           high = scales::muted("red")) + 
     coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
     # might need to adjust x-axes to plot all data
-    scale_x_continuous(breaks = seq(-180,-120,axis.mod ), 
-                     minor_breaks = -117:-180, labels = 2003:max_year) +
+    scale_x_continuous(breaks = seq(-179,-119,axis.mod ), 
+                     minor_breaks = -117:-179, labels = 2003:max_year) +
     #scale_y_continuous(breaks = c(35,40,45), minor_breaks = c(32:48)) +
     xlab(x_lab) +
     ylab("Latitude") +
@@ -123,11 +123,9 @@ dist_maps <- function(dfile,
 # age-class each year ##########################################################
 
 # print(m0)
-# age 1 sablefish for figure 6 ####
-# combine later for fig 6
-m1 = dist_maps(pred_all[pred_all$age==1,],scale_label = 'CPUE age-1')
-ggsave( paste0(fig_dir ,spp_name,"-age-1-year.png"), width = 6.2, height = 2)
+# might need to tinker with xadjust to get axes correct
 
+m1 = dist_maps(pred_all[pred_all$age==1,],scale_label = 'CPUE age-1')
 # other age classes ####
 m2 = dist_maps(pred_all[pred_all$age==2,],scale_label = 'CPUE age-2')
 m3 = dist_maps(pred_all[pred_all$age==3,],scale_label = 'CPUE age-3')
@@ -147,10 +145,14 @@ ggsave( paste0(fig_dir , spp_name,"-age-class-year.png"), width = 6.2, height = 
 
 # sablefish 
 if(spp_name == "sablefish"){
-  y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117), scale_label = 'CPUE 2008 recruits')
-  y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117), scale_label = 'CPUE 2010 recruits')
-  y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117), scale_label = 'CPUE 2016 recruits')
-  y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117), scale_label = 'CPUE 2021 recruits')
+  y2008 = dist_maps(pred_all[pred_all$rec_year==2008,],xlim = c(-170, -117), 
+                    scale_label = 'CPUE 2008 recruits')
+  y2010 = dist_maps(pred_all[pred_all$rec_year==2010,],xlim = c(-170, -117), 
+                    scale_label = 'CPUE 2010 recruits')
+  y2016 = dist_maps(pred_all[pred_all$rec_year==2016,],xlim = c(-170, -117), 
+                    scale_label = 'CPUE 2016 recruits')
+  y2021 = dist_maps(pred_all[pred_all$rec_year==2021,],xlim = c(-170, -117), 
+                    scale_label = 'CPUE 2021 recruits')
 
   ggarrange(y2008, y2010, y2016, y2021,nrow = 4)
 
