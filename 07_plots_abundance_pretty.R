@@ -69,7 +69,7 @@ dist_maps <- function(dfile,
                       scalebiomass = T,
                       x_lab = '',
                       scale_label = 'CPUE',
-                      xadjust = -3) {
+                      xadjust = 0) {
   # data preparation
   # dfile = pred_all[pred_all$age==1,]
   dfile = dplyr::filter(dfile, p <= quantile(dfile$p,0.99))
