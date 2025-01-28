@@ -66,7 +66,7 @@ d$dist_BRG <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="BRG")])^2 +
 d$dist_MRO <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="MRO")])^2 + 
                      (d$Y - ports_rad$Y[which(ports_rad$Pcid=="MRO")])^2)
 
-cutoff <- 282 # was 232 updated here but not run as of 2025-01-28
+cutoff <- 282 # was 232 updated
 distances <- dplyr::group_by(d, year) |>
   dplyr::summarise(AST = sum(exp(est[which(dist_AST < cutoff)])),
                    COS = sum(exp(est[which(dist_COS < cutoff)])),
@@ -96,5 +96,5 @@ p2 <- ggplot(distances_long, aes(year, value, group = Name, col = Name)) +
 
 p3 <- gridExtra::grid.arrange(p1, p2, ncol = 1)
 
-ggsave(p3, filename = "plots/sablefish_spatial_risk.png", width = 7, height = 6)  
+ggsave(p3, filename = "plots/sablefish_spatial_risk-old.png", width = 7, height = 6)  
 

@@ -71,14 +71,22 @@ for(spp in 1:2) {
 
 ggplot(all_output, aes(age, exp(mean), col = species)) + 
   geom_hline(aes(yintercept=1), col="red", alpha=0.3) + 
-  geom_pointrange(aes(ymin = exp(lower), ymax = exp(upper)), position=position_dodge(0.4)) + 
-  geom_point(position=position_dodge(0.4)) + 
+  geom_pointrange(aes(ymin = exp(lower), ymax = exp(upper)), 
+                  position=position_dodge(0.4), size=0.1) + 
+  geom_point(position=position_dodge(0.4), size = 0.1) + 
   scale_color_viridis_d(option="magma", begin=0.2, end = 0.8, name="Species") +
+  scale_x_continuous(breaks = seq(0,9,1), minor_breaks = seq(0,9,1)) + 
   xlab("Age") + 
   ylab("Estimated slope") + 
-  theme_bw()
+  theme_bw() + 
+  theme(#
+    axis.text = element_text(size=8),
+    axis.title = element_text(size=8),
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 8),
+    legend.key.size = unit(1,'lines')) 
 
-ggsave("plots/glm_coefficients.png", width=6, height = 5)
+ggsave("plots/glm_coefficients.png", width=3.5, height = 2)
 
 
 # look at coefficients from the year model, as a diagnostic

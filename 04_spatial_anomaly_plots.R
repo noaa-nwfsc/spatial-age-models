@@ -71,7 +71,7 @@ ggplot(coast_proj) +
         strip.background = element_rect(fill = "white"),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +  # Set facet label background to white
   facet_wrap(~age, nrow = 1)
-ggsave("plots/hake_spatial_anomalies.png", width = 7, height = 5)  
+ggsave("plots/hake_spatial_anomalies-facet.png", width = 7, height = 5)  
   
 
 ggplot(coast_proj) + 
@@ -85,5 +85,5 @@ ggplot(coast_proj) +
         strip.background = element_rect(fill = "white"),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +  # Set facet label background to white
   facet_wrap(~age, nrow = 2)
-ggsave("plots/sablefish_spatial_anomalies.png", width = 7, height = 8)  
+ggsave("plots/sablefish_spatial_anomalies-facet.png", width = 7, height = 8)  
 

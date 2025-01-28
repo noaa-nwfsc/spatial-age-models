@@ -150,31 +150,56 @@ pars <- rbind(hake_pars, sablefish_pars)
 
 p1 <- dplyr::filter(pars, term == "range") |> 
   ggplot(aes(age, estimate, col = species)) + 
-  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), 
+                  position = position_dodge(0.4), size = 0.1) + 
+  scale_x_continuous(breaks = seq(0,9,1), minor_breaks = seq(0,9,1)) + 
   scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
   xlab("Age") + 
   ylab("Estimated range (km)") + 
   theme_bw() + 
-  theme(legend.position = "none")
+  theme(legend.position = 'none',
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(1,'lines'))
 
 p2 <- dplyr::filter(pars, term == "sigma_O") |> 
   ggplot(aes(age, estimate, col = species)) + 
-  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), 
+                  position = position_dodge(0.4), size = 0.1) + 
   scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  scale_x_continuous(breaks = seq(0,9,1), minor_breaks = seq(0,9,1)) + 
   xlab("Age") + 
   ylab(expression(paste("Spatial ", sigma))) + 
   theme_bw() + 
-  theme(legend.position = "none")
+  theme(legend.position = c(0.65, 0.85),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(0.4,'lines'),
+        legend.background=element_blank()
+        )
 
 p3 <- dplyr::filter(pars, term == "sigma_E") |> 
   ggplot(aes(age, estimate, col = species)) + 
-  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), position = position_dodge(0.4)) + 
+  geom_pointrange(aes(ymin=estimate-2*std.error, ymax = estimate+2*std.error), 
+                  position = position_dodge(0.4), size = 0.1) + 
   scale_color_viridis_d(option="magma", begin=0.2, end = 0.8) +
+  scale_x_continuous(breaks = seq(0,9,1), minor_breaks = seq(0,9,1)) + 
   xlab("Age") + 
   ylab(expression(paste("Spatiotemporal ", sigma))) + 
   theme_bw() + 
-  theme(legend.position = c(0.5, 0.85))
+  theme(legend.position = "none",
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=8),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8),
+        legend.key.size = unit(1,'lines'))
 
-combo <- gridExtra::grid.arrange(p1, p2, p3, nrow = 1)
-
-ggsave(combo, filename="plots/spatial_parameters.png", height = 4, width=7)
+# combo <- gridExtra::grid.arrange( p2, p3, p1,nrow = 1)
+combo <- ggpubr::ggarrange( p2, p3, p1,nrow = 1, 
+                            labels = c('a)','b)','c)'),
+                            font.label = list(size=8))
+ggsave(combo, filename="plots/spatial_parameters.png", height = 2, width=5)
