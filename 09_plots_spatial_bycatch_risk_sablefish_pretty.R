@@ -65,7 +65,7 @@ dist_maps <- function(dfile,
     # might need to adjust here based on the scale of the data, esp 'trans' term.
     # scale_color_viridis_c(option = 'turbo', direction = 1,  
     #                     name='CPUE') +
-    scale_color_gradient2(name = "CPUE", 
+    scale_color_gradient2(name = "CPUE age-1", 
                           transform = trans, 
                           low = scales::muted("black"),
                           midpoint = midp,
