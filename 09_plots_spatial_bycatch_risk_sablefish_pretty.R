@@ -108,7 +108,7 @@ d$dist_BRG <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="BRG")])^2 +
 d$dist_MRO <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="MRO")])^2 + 
                      (d$Y - ports_rad$Y[which(ports_rad$Pcid=="MRO")])^2)
 
-cutoff <- 232
+cutoff <- 282
 distances <- dplyr::group_by(d, year) |>
   dplyr::summarise(AST = sum(exp(est[which(dist_AST < cutoff)])),
                    COS = sum(exp(est[which(dist_COS < cutoff)])),

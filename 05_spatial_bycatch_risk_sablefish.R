@@ -50,7 +50,7 @@ p1 <- ggplot(coast_proj) +
   facet_wrap(~year, nrow = 1)
 
 # read in ports
-ports_rad <- readRDS("~/Documents/Github Projects/spatial-age-models/ports_rad.rds")
+ports_rad <- readRDS( paste0(home_dir, "/ports_rad.rds"))
 d$dist_AST <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="AST")])^2 + 
                      (d$Y - ports_rad$Y[which(ports_rad$Pcid=="AST")])^2)
 d$dist_COS <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="COS")])^2 + 
@@ -66,7 +66,7 @@ d$dist_BRG <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="BRG")])^2 +
 d$dist_MRO <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="MRO")])^2 + 
                      (d$Y - ports_rad$Y[which(ports_rad$Pcid=="MRO")])^2)
 
-cutoff <- 232
+cutoff <- 282 # was 232 updated here but not run as of 2025-01-28
 distances <- dplyr::group_by(d, year) |>
   dplyr::summarise(AST = sum(exp(est[which(dist_AST < cutoff)])),
                    COS = sum(exp(est[which(dist_COS < cutoff)])),
