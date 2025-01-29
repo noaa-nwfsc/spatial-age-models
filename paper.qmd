@@ -1,26 +1,23 @@
 ---
 title: "Advancing spatially explicit fisheries management with age-structured species distribution models"
-format: pdf
-crossref:
-  custom:
-    - kind: float
-      key: supfig
-      latex-env: supfig
-      reference-prefix: Fig. S
-      space-before-numbering: false
-      latex-list-of-description: Supplementary Figure
+
+format: 
+  pdf:
+    keep-tex: true
+    template-partials: 
+      - title.tex
+    include-in-header:
+      text: |
+        \usepackage[noblocks]{authblk}
+        \renewcommand*{\Authsep}{, }
+        \renewcommand*{\Authand}{, }
+        \renewcommand*{\Authands}{, }
+        \renewcommand\Affilfont{\small}
 author:
   - name: Eric Ward
-    affiliation:
-      - id: cb
-        name: Consercation Biology Division, Northwest Fisheries Science Center, National Marine Fisheries Service, National Oceanographic and Atmospheric Administration
-        address: 2725 Montlake Blvd E
-        city: Seattle
-        state: WA
-        zip: 98112
   - name: Nick Tolimieri
-    affiliation:
-      - ref: cb
+    affiliations:
+    - Conservation Biology Division, Northwest Fisheries Science Center, National Marine Fisheries Service, National Oceanographic and Atmospheric Administration, 2725 Montlake Blvd E, Seattle WA 98112
   
 editor: visual
 bibliography: references.bib
@@ -77,11 +74,11 @@ Gridded predictions from the Poisson GLM represent the expected number of fish p
 
 One useful output from our spatiotemporal models is the estimated field spatial f, $\omega_s$, representing the average spatial distribution across years. Results from our model of North Pacific hake show a concentration of age-1 hake near the coast, and more of latitudinal north - south break for 2 - 3 year old hake (with higher occurrences in the South, [Fig. @fig-hake-spatial-anomaly]). As expected, age 4 hake appear to have a northern distribution, though the gradient is less clear than for ages 2 - 3. For sablefish, our models estimate a concentration of age 0 - 2 sablefish in shallow water, with a deeper distribution by age 3 ([Fig. @fig-sablefish-spatial-anomaly]). Latitudinally, there are several areas in central Oregon that appear to have consistently lower occurrences than average for older age classes ([Fig. @fig-sablefish-spatial-anomaly]).
 
-Estimates of age composition by year may be useful in tracking the distribution of cohorts through time, as well as examining variability in distributions of particular age classes over time. For example, for both hake ([Figs. @fig-hake-spatial-composition] & [@supfig-hake-spatial-composition-all]) and sablefish ([Figs. @fig-sablefish-spatial-composition] & [@supfig-sablefish-spatial-composition-all]), distinct patches of high age-0 abundance tended to disperse as the fish aged such that spatial distributions for older age-classes were less distinct. Additionally, results from our models can be used to project the spatial distributions of strong hake cohorts (2008, 2010, 2014, 2016; [Fig. @fig-hake-spatial-composition]) and strong sablefish cohorts (2008, 2010, 2016, 2021, [Fig. @fig-sablefish-spatial-composition]). These predictions are also useful in revealing subtle differences between strong cohort years. For example, the 2014 cohort of Pacific hake had a larger fraction of age-1 individuals distributed in the northern part of the domain (along the coast of Washington state), while other cohorts had hotspots in the center and southern portion of the domain. Similarly for sablefish, the 2016 cohort was concentrated in the north (age-1 individuals in 2011), versus other cohorts that had a more coastwide distribution. In fact, age-1 fish were uncommon south of approximately Cape Mendocino (40 °N) from 2015 - 2020 ([@supfig-sablefish-spatial-composition-all]), concurrent with 'the Blob' and other marine heatwaves.
+Estimates of age composition by year may be useful in tracking the distribution of cohorts through time, as well as examining variability in distributions of particular age classes over time. For example, for both hake ([Figs. @fig-hake-spatial-composition] & [-@fig-hake-spatial-composition-all]) and sablefish ([Figs. @fig-sablefish-spatial-composition] & [-@fig-sablefish-spatial-composition-all]), distinct patches of high age-0 abundance tended to disperse as the fish aged such that spatial distributions for older age-classes were less distinct. Additionally, results from our models can be used to project the spatial distributions of strong hake cohorts (2008, 2010, 2014, 2016; [Fig. @fig-hake-spatial-composition]) and strong sablefish cohorts (2008, 2010, 2016, 2021, [Fig. @fig-sablefish-spatial-composition]). These predictions are also useful in revealing subtle differences between strong cohort years. For example, the 2014 cohort of Pacific hake had a larger fraction of age-1 individuals distributed in the northern part of the domain (along the coast of Washington state), while other cohorts had hotspots in the center and southern portion of the domain. Similarly for sablefish, the 2016 cohort was concentrated in the north (age-1 individuals in 2011), versus other cohorts that had a more coastwide distribution. In fact, age-1 fish were uncommon south of approximately Cape Mendocino (40 °N) from 2015 - 2020 ([@fig-sablefish-spatial-composition-all]), concurrent with 'the Blob' and other marine heatwaves.
 
 When comparing the spatial and spatiotemporal parameters across ages and species, we find that for most ages, there is a decrease in the estimated spatial and spatiotemporal variances as well as a decrease in the spatial range with increasing age ([Fig. @fig-spatial-parameters]). Spatial and spatiotemporal variances control the magnitude of the peaks and valleys in estimated latent fields, meaning that spatial fields estimated for older fish are less variable. Similarly, the spatial range determines the distance at which locations are functionally independent (for the Matern, $\rho$ \~ 0.13). The decline in range with age implies that spatial distributions also become more concentrated as a function of age ([Fig. @fig-spatial-parameters]).
 
-Our 1-step ahead validation analyses indicate that there is a stronger association between older ages compared to younger ages, and this effect is strongest for sablefish ([Fig. @fig-glm-coefficients]). When comparing our initial Poisson GLM to a more complicated GLMM with random year effects in the intercept and slope, we found little support for shared correlations across age classes of a given species. Shared correlations would indicate for example that age-2 and age-3 sablefish may be more or less predictable in certain years (indicating that information about one age class may be useful in predicting another). With the exception of a strong positive correlation between age-0 and age-1 sablefish, most correlations between age classes were smaller than 0.3 in magnitude ([@supfig-glm-coefficients-time]).
+Our 1-step ahead validation analyses indicate that there is a stronger association between older ages compared to younger ages, and this effect is strongest for sablefish ([Fig. @fig-glm-coefficients]). When comparing our initial Poisson GLM to a more complicated GLMM with random year effects in the intercept and slope, we found little support for shared correlations across age classes of a given species. Shared correlations would indicate for example that age-2 and age-3 sablefish may be more or less predictable in certain years (indicating that information about one age class may be useful in predicting another). With the exception of a strong positive correlation between age-0 and age-1 sablefish, most correlations between age classes were smaller than 0.3 in magnitude ([@fig-glm-coefficients-time]).
 
 Our forecasts of age-1 sablefish CPUE illustrates the variability of potential bycatch risk in space and time. In most years for example, age-1 CPUE is lowest in ports in the state of California (Eureka, Fort Bragg, Morro Bay) and highest in several ports in the state of Oregon (Astoria, Coos Bay, [Fig. @fig-bycatch-risk]). These results also illustrate the high temporal variability in age-1 CPUE, with peaks occuring in 2009, 2014, 2017, and 2021, @fig-bycatch-risk). During peak years, there is also variability among ports -- forecasts of age-1 CPUE were similar for Astoria and Coos Bay in 2021 for instance, but the potential bycatch risk near Astoria was higher in 2017 ([Fig. @fig-bycatch-risk]).
 
@@ -107,7 +104,7 @@ Perhaps the biggest challenge in implementing our modeling framework in the futu
 
 #### Future directions
 
-Our age-structured SDM framework represents a significant advance in spatial modeling, offering novel insights into the dynamics of fish populations and their age-specific distributions. From a management perspective, age-structured SDMs offer a powerful tool for addressing critical challenges, including bycatch mitigation, spatial planning, and sustainable harvesting. By providing high-resolution predictions of spatial age composition, these models enable managers to align fishing effort with ecological and economic goals, ensuring the long-term sustainability of marine resources. Future research could extend this framework by incorporating environmental covariates, such as temperature or oxygen, to account for dynamic habitat preferences, or fisheries removals to account for local depletion [@ono2016]. Additionally, exploring the potential for multi-species models could provide insights into ecosystem-level interactions and their influence on spatial distributions.
+Our age-structured SDM framework represents a significant advance in spatial modeling, offering novel insights into the dynamics of fish populations and their age-specific distributions. From a management perspective, age-structured SDMs offer a powerful tool for addressing critical challenges, including bycatch mitigation, spatial planning, and sustainable harvesting. By providing high-resolution predictions of spatial age composition, these models enable managers to align fishing effort with ecological and economic goals, ensuring the long-term sustainability of marine resources. Future research could extend this framework by incorporating environmental covariates, such as temperature or oxygen, to account for dynamic habitat preferences, or fisheries removals to account for local depletion [@ono2016space]. Additionally, exploring the potential for multi-species models could provide insights into ecosystem-level interactions and their influence on spatial distributions.
 
 ### Acknowledgments
 
@@ -168,27 +165,31 @@ knitr::include_graphics("plots/sablefish_spatial_risk.png")
 \break
 \clearpage
 ```
-## Supplementary material {.appendix}
+# Supplementary material {.appendix}
 
-```{r label="supfig-spatial-parameters", fig.cap="Estimated spatial parameters (range, and spatial and spatiotemporal standard deviations). Points represent mean estimates; lines represent 95% confidence intervals", echo=FALSE}
+```{r }
+#| label: fig-spatial-parameters
+#| echo: false
+#| fig-cap: "Estimated spatial parameters (range, and spatial and spatiotemporal standard deviations). Points represent mean estimates; lines represent 95% confidence intervals"
+
 knitr::include_graphics("plots/spatial_parameters.png")
 ```
 
 \newpage
 
-```{r label="supfig-hake-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent ages (1-5). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
+```{r label="fig-hake-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for Pacific hake; rows represent ages (1-5). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
 knitr::include_graphics("plots/Pacific hake-age-class-year.png")
 ```
 
 \newpage
 
-```{r label="supfig-sablefish-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; rows represent ages (0-4). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
+```{r label="fig-sablefish-spatial-composition-all", fig.cap="Estimated spatial catch per unit effort (CPUE, kg per km2) for sablefish; rows represent ages (0-4). CPUE has been scaled for each cohort for visualization purposes.", echo=FALSE}
 
 knitr::include_graphics("plots/sablefish-age-class-year.png")
 ```
 
 \newpage
 
-```{r label="supfig-glm-coefficients-time", fig.cap="Time-varying coefficients (with random effects in year) relating predicted densities of age a fish in year t to observed numbers the following year. ", echo=FALSE}
+```{r label="fig-glm-coefficients-time", fig.cap="Time-varying coefficients (with random effects in year) relating predicted densities of age a fish in year t to observed numbers the following year. ", echo=FALSE}
 knitr::include_graphics("plots/glm_coefficients_time.png")
 ```
