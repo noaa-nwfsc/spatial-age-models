@@ -2,17 +2,8 @@
 title: "Advancing spatially explicit fisheries management with age-structured species distribution models"
 
 format: 
-  pdf:
-    keep-tex: true
-    template-partials: 
-      - title.tex
-    include-in-header:
-      text: |
-        \usepackage[noblocks]{authblk}
-        \renewcommand*{\Authsep}{, }
-        \renewcommand*{\Authand}{, }
-        \renewcommand*{\Authands}{, }
-        \renewcommand\Affilfont{\small}
+  docx:
+  
 author:
   - name: Eric Ward
   - name: Nick Tolimieri
@@ -108,7 +99,7 @@ Our age-structured SDM framework represents a significant advance in spatial mod
 
 ### Acknowledgments
 
-We thank Owen Liu and XX reviewers for constructive comments on the manuscript.
+We thank Owen Liu and Chris Jordan for constructive comments on the manuscript.
 
 ```{=tex}
 \break

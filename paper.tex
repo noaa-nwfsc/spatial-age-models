@@ -75,28 +75,38 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
 \newlength{\cslhangindent}
 \setlength{\cslhangindent}{1.5em}
 \newlength{\csllabelwidth}
 \setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
   % turn on hanging indent if param 1 is 1
   \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
   \fi
   % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
 \usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage[noblocks]{authblk}
@@ -104,10 +114,6 @@
 \renewcommand*{\Authand}{, }
 \renewcommand*{\Authands}{, }
 \renewcommand\Affilfont{\small}
-\makeatletter
-\makeatother
-\makeatletter
-\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -144,23 +150,16 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \makeatother
 \makeatletter
+\makeatother
+\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
-\makeatother
-\makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\makeatother
-\makeatletter
-\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
-\makeatother
-\makeatletter
-\makeatother
-\makeatletter
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
@@ -189,10 +188,8 @@ age-structured species distribution models}
   \date{}
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, boxrule=0pt, enhanced]}{\end{tcolorbox}}\fi
 
-\hypertarget{abstract}{%
-\subsection{\texorpdfstring{\emph{Abstract}}{Abstract}}\label{abstract}}
+\subsection{\texorpdfstring{\emph{Abstract}}{Abstract}}\label{abstract}
 
 Species distribution models (SDMs) are widely used in fisheries and
 ecology, providing insights into species' spatial distributions. While
@@ -222,8 +219,7 @@ survey types and platforms around the world, and supports the
 development of spatially explicit management strategies and optimal
 allocation of fishing effort.
 
-\hypertarget{introduction}{%
-\subsection{Introduction}\label{introduction}}
+\subsection{Introduction}\label{introduction}
 
 Species distribution models (SDMs) are widely used in marine ecology to
 understand and predict the spatial distribution of species based on
@@ -316,11 +312,9 @@ through time, make maps of potential bycatch hotspots, and identify
 areas with higher concentrations of mature fish as potential targets of
 fishing effort.
 
-\hypertarget{methods}{%
-\subsection{Methods}\label{methods}}
+\subsection{Methods}\label{methods}
 
-\hypertarget{data}{%
-\subsubsection{Data}\label{data}}
+\subsubsection{Data}\label{data}
 
 On the west coast of the USA, the West Coast Groundfish Bottom Trawl
 Survey (WCGBTS) has been an annual survey conduced from 2003 - present.
@@ -350,8 +344,7 @@ collected 2007 -- 2019 (mean 650.7 individuals sampled per year) and
 sablefish collected 2003 -- 2023 (mean 1314.4 individuals sampled per
 year).
 
-\hypertarget{spatial-age-models}{%
-\subsubsection{Spatial age models}\label{spatial-age-models}}
+\subsubsection{Spatial age models}\label{spatial-age-models}
 
 For each species, we filtered by sex to focus on females and truncated
 ages to focus on those with the highest data availability; for hake this
@@ -404,9 +397,8 @@ DHARMa package (Hartig, 2022). Code and data to replicate our analysis
 is publicly available on Github,
 \url{https://github.com/ericward-noaa/spatial-age-models}.
 
-\hypertarget{validating-future-predictive-ability}{%
 \subsubsection{Validating future predictive
-ability}\label{validating-future-predictive-ability}}
+ability}\label{validating-future-predictive-ability}
 
 As a first validation, we leveraged the natural recursive element of our
 data to quantify the ability of our models to predict the future
@@ -430,9 +422,8 @@ second model was identical to our Poisson GLM with random effects in
 \(\beta_{0}\) and \(\beta_{1}\), where year was used as the grouping
 variable.
 
-\hypertarget{using-predictions-to-quantify-bycatch-risk}{%
 \subsubsection{Using predictions to quantify bycatch
-risk}\label{using-predictions-to-quantify-bycatch-risk}}
+risk}\label{using-predictions-to-quantify-bycatch-risk}
 
 To illustrate potential benefits to fisheries management, we used output
 from our models to generate spatiotemporal predictions of age-1
@@ -455,8 +446,7 @@ previous work , we used a radius of 282 km (Leising et al., 2024). These
 predictions of port-level CPUE were then summarized as annual time
 series (1-step ahead forecasts).
 
-\hypertarget{results}{%
-\subsection{Results}\label{results}}
+\subsection{Results}\label{results}
 
 One useful output from our spatiotemporal models is the estimated field
 spatial f, \(\omega_s\), representing the average spatial distribution
@@ -535,8 +525,7 @@ age-1 CPUE were similar for Astoria and Coos Bay in 2021 for instance,
 but the potential bycatch risk near Astoria was higher in 2017
 (Fig.~\ref{fig-bycatch-risk}).
 
-\hypertarget{discussion}{%
-\subsection{Discussion}\label{discussion}}
+\subsection{Discussion}\label{discussion}
 
 In this study, we developed an age-structured species distribution
 modeling (SDM) framework to explore spatial age composition and predict
@@ -549,9 +538,8 @@ distributions and validating predictive skill, we highlight the
 potential utility of incorporating age structure into SDMs for advancing
 spatially explicit fisheries management.
 
-\hypertarget{age-structured-spatial-patterns}{%
 \paragraph{\texorpdfstring{\emph{Age-Structured Spatial
-Patterns}}{Age-Structured Spatial Patterns}}\label{age-structured-spatial-patterns}}
+Patterns}}{Age-Structured Spatial Patterns}}\label{age-structured-spatial-patterns}
 
 Results from our age-structured spatial models underscore the importance
 of accounting for age in SDMs. The spatial patterns observed for both
@@ -566,9 +554,8 @@ ontogenetic shift to deeper waters, while the observed north-south
 gradient in older hake aligns with known migratory behaviors influenced
 by spawning and feeding grounds (Agostini et al., 2006).
 
-\hypertarget{predictive-skill-and-cohort-tracking}{%
 \paragraph{\texorpdfstring{\emph{Predictive skill and cohort
-tracking}}{Predictive skill and cohort tracking}}\label{predictive-skill-and-cohort-tracking}}
+tracking}}{Predictive skill and cohort tracking}}\label{predictive-skill-and-cohort-tracking}
 
 Our validation analyses revealed that the predictive skill of our
 framework increases with age, particularly for sablefish. This result is
@@ -588,9 +575,8 @@ age composition provides a tool for assessing how environmental changes,
 such as ocean warming or habitat shifts, may impact the distribution of
 key cohorts over time.
 
-\hypertarget{managing-bycatch-risk}{%
 \paragraph{\texorpdfstring{\emph{Managing bycatch
-risk}}{Managing bycatch risk}}\label{managing-bycatch-risk}}
+risk}}{Managing bycatch risk}}\label{managing-bycatch-risk}
 
 Our case study using age-1 sablefish demonstrates the practical utility
 of our modeling for mitigating bycatch risk. Forecasts of CPUE for age-1
@@ -607,9 +593,7 @@ environmental drivers (Tolimieri et al., 2018; Tolimieri \& Haltuch,
 to enhance its predictive accuracy and further support climate-resilient
 fisheries management.
 
-\hypertarget{need-for-reliable-age-data}{%
-\paragraph{Need for reliable age
-data}\label{need-for-reliable-age-data}}
+\paragraph{Need for reliable age data}\label{need-for-reliable-age-data}
 
 Perhaps the biggest challenge in implementing our modeling framework in
 the future is that these models depend on reliable age data being
@@ -622,8 +606,7 @@ implemented to make these programs more efficient (ICES, 2020). While
 age samples are more expensive to collect than length information, there
 is value from the increased precision associated with age data.
 
-\hypertarget{future-directions}{%
-\paragraph{Future directions}\label{future-directions}}
+\paragraph{Future directions}\label{future-directions}
 
 Our age-structured SDM framework represents a significant advance in
 spatial modeling, offering novel insights into the dynamics of fish
@@ -641,21 +624,19 @@ Additionally, exploring the potential for multi-species models could
 provide insights into ecosystem-level interactions and their influence
 on spatial distributions.
 
-\hypertarget{acknowledgments}{%
-\subsubsection{Acknowledgments}\label{acknowledgments}}
+\subsubsection{Acknowledgments}\label{acknowledgments}
 
-We thank Owen Liu and XX reviewers for constructive comments on the
+We thank Owen Liu and Chris Jordan for constructive comments on the
 manuscript.
 
 \break
 \clearpage
 
-\hypertarget{references}{%
-\subsection{References}\label{references}}
+\subsection{References}\label{references}
 
-\hypertarget{refs}{}
+\phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-agostini2006}{}}%
+\bibitem[\citeproctext]{ref-agostini2006}
 Agostini, V. N., Francis, R. C., Hollowed, A. B., Pierce, S. D., Wilson,
 C., \& Hendrix, A. N. (2006). {The relationship between Pacific hake
 ({\emph{Merluccius productus}}) distribution and poleward subsurface
@@ -663,115 +644,115 @@ flow in the California Current System}. \emph{Canadian Journal of
 Fisheries and Aquatic Sciences}, \emph{63}(12), 2648--2659.
 \url{https://doi.org/10.1139/f06-139}
 
-\leavevmode\vadjust pre{\hypertarget{ref-Anderson2024}{}}%
+\bibitem[\citeproctext]{ref-Anderson2024}
 Anderson, S. C., Ward, E. J., English, P. A., Barnett, L. A. K., \&
 Thorson, J. T. (2024). {sdmTMB: An R package for fast, flexible, and
 user-friendly generalized linear mixed effects models with spatial and
 spatiotemporal random fields}. \emph{bioRxiv}.
 \url{https://doi.org/10.1101/2022.03.24.485545}
 
-\leavevmode\vadjust pre{\hypertarget{ref-brooks2017}{}}%
+\bibitem[\citeproctext]{ref-brooks2017}
 Brooks, E., M., Kristensen, K., Benthem, A. van, K. J.and Magnusson,
 Berg, C. W., Nielsen, A., Skaug, H. J., Mächler, M., \& Bolker, M., B.
 (2017). {glmmTMB balances speed and flexibility among packages for
 zero-inflated generalized linear mixed modeling}. \emph{The R Journal},
 \emph{9}(2), 378. \url{https://doi.org/10.32614/rj-2017-066}
 
-\leavevmode\vadjust pre{\hypertarget{ref-cao2017}{}}%
+\bibitem[\citeproctext]{ref-cao2017}
 Cao, J., Thorson, J. T., Richards, R. A., \& Chen, Y. (2017).
 {Spatiotemporal index standardization improves the stock assessment of
 northern shrimp in the Gulf of Maine}. \emph{Canadian Journal of
 Fisheries and Aquatic Sciences}, \emph{74}(11), 1781--1793.
 \url{https://doi.org/10.1139/cjfas-2016-0137}
 
-\leavevmode\vadjust pre{\hypertarget{ref-ciannelli2004}{}}%
+\bibitem[\citeproctext]{ref-ciannelli2004}
 Ciannelli, L., Chan, K.-S., Bailey, K. M., \& Stenseth, N. Chr. (2004).
 {Nonadditive effects of the environment on the survival of a large
 marine fish population}. \emph{Ecology}, \emph{85}(12), 3418--3427.
 \url{https://doi.org/10.1890/03-0755}
 
-\leavevmode\vadjust pre{\hypertarget{ref-elith2009}{}}%
+\bibitem[\citeproctext]{ref-elith2009}
 Elith, J., \& Leathwick, J. R. (2009). {Species distribution models:
 Ecological explanation and prediction across space and time}.
 \emph{Annual Review of Ecology, Evolution, and Systematics},
 \emph{40}(1), 677--697.
 \url{https://doi.org/10.1146/annurev.ecolsys.110308.120159}
 
-\leavevmode\vadjust pre{\hypertarget{ref-fredston2021}{}}%
+\bibitem[\citeproctext]{ref-fredston2021}
 Fredston, A., Pinsky, M., Selden, R. L., Szuwalski, C., Thorson, J. T.,
 Gaines, S. D., \& Halpern, B. S. (2021). {Range edges of North American
 marine species are tracking temperature over decades}. \emph{Global
 Change Biology}, \emph{27}(13), 3145--3156.
 \url{https://doi.org/10.1111/gcb.15614}
 
-\leavevmode\vadjust pre{\hypertarget{ref-Grandin2024}{}}%
+\bibitem[\citeproctext]{ref-Grandin2024}
 Grandin, C. J., Johnson, K. F., M., E. A., \& M., B. A. (2024).
 \emph{{Status of the Pacific Hake (whiting) stock in U.S. and Canadian
 waters in 2024. Prepared by the Joint Technical Committee of the U.S.
 and Canada Pacific Hake/Whiting Agreement, National Marine Fisheries
 Service and Fisheries and Oceans Canada. 246 p.}}
 
-\leavevmode\vadjust pre{\hypertarget{ref-guisan2005}{}}%
+\bibitem[\citeproctext]{ref-guisan2005}
 Guisan, A., \& Thuiller, W. (2005). {Predicting species distribution:
 offering more than simple habitat models}. \emph{Ecology Letters},
 \emph{8}(9), 993--1009.
 \url{https://doi.org/10.1111/j.1461-0248.2005.00792.x}
 
-\leavevmode\vadjust pre{\hypertarget{ref-dharma2022}{}}%
+\bibitem[\citeproctext]{ref-dharma2022}
 Hartig, F. (2022). \emph{{DHARMa: Residual diagnostics for hierarchical
 (multi-level / mixed) regression models}}.
 \url{https://CRAN.R-project.org/package=DHARMa}
 
-\leavevmode\vadjust pre{\hypertarget{ref-hilborn1992}{}}%
+\bibitem[\citeproctext]{ref-hilborn1992}
 Hilborn, R., \& Walters, C. J. (1992). \emph{{Quantitative fisheries
 stock assessment}}. Springer US.
 \url{https://doi.org/10.1007/978-1-4615-3598-0}
 
-\leavevmode\vadjust pre{\hypertarget{ref-ices2020}{}}%
+\bibitem[\citeproctext]{ref-ices2020}
 ICES. (2020). {Workshop on unavoidable survey effort reduction
 (WKUSER)}. \emph{ICES}. \url{https://doi.org/10.17895/ICES.PUB.7453}
 
-\leavevmode\vadjust pre{\hypertarget{ref-johnson2019}{}}%
+\bibitem[\citeproctext]{ref-johnson2019}
 Johnson, K. F., Thorson, J. T., \& Punt, A. E. (2019). {Investigating
 the value of including depth during spatiotemporal index
 standardization}. \emph{Fisheries Research}, \emph{216}, 126--137.
 \url{https://doi.org/10.1016/j.fishres.2019.04.004}
 
-\leavevmode\vadjust pre{\hypertarget{ref-keller2017}{}}%
+\bibitem[\citeproctext]{ref-keller2017}
 Keller, A. A., Wallace, J. R., \& Methot, R. D. (2017). \emph{{The
 Northwest Fisheries Science Center's West coast groundfish bottom trawl
 survey: History design, and description}}. NOAA, U.S. Department of
 Commerce. \url{https://doi.org/10.7289/V5/TM-NWFSC-136}
 
-\leavevmode\vadjust pre{\hypertarget{ref-kristensen2016}{}}%
+\bibitem[\citeproctext]{ref-kristensen2016}
 Kristensen, K., Nielsen, A., Berg, C. W., Skaug, H., \& Bell, B. M.
 (2016). {TMB: Automatic differentiation and laplace approximation}.
 \emph{Journal of Statistical Software}, \emph{70}(5).
 \url{https://doi.org/10.18637/jss.v070.i05}
 
-\leavevmode\vadjust pre{\hypertarget{ref-laman2018}{}}%
+\bibitem[\citeproctext]{ref-laman2018}
 Laman, E. A., Rooper, C. N., Turner, K., Rooney, S., Cooper, D. W., \&
 Zimmermann, M. (2018). {Using species distribution models to describe
 essential fish habitat in Alaska}. \emph{Canadian Journal of Fisheries
 and Aquatic Sciences}, \emph{75}(8), 1230--1255.
 \url{https://doi.org/10.1139/cjfas-2017-0181}
 
-\leavevmode\vadjust pre{\hypertarget{ref-leising2024cciea}{}}%
+\bibitem[\citeproctext]{ref-leising2024cciea}
 Leising, A., M., H., N., T., G., W., \& A., H. (2024).
 
-\leavevmode\vadjust pre{\hypertarget{ref-lewison2004}{}}%
+\bibitem[\citeproctext]{ref-lewison2004}
 Lewison, R. L., Freeman, S. A., \& Crowder, L. B. (2004). {Quantifying
 the effects of fisheries on threatened species: the impact of pelagic
 longlines on loggerhead and leatherback sea turtles}. \emph{Ecology
 Letters}, \emph{7}(3), 221--231.
 \url{https://doi.org/10.1111/j.1461-0248.2004.00573.x}
 
-\leavevmode\vadjust pre{\hypertarget{ref-lindgren2015}{}}%
+\bibitem[\citeproctext]{ref-lindgren2015}
 Lindgren, F., \& Rue, H. (2015). {Bayesian spatial modelling
 with{\emph{R}}-{\textbf{INLA}}}. \emph{Journal of Statistical Software},
 \emph{63}(19). \url{https://doi.org/10.18637/jss.v063.i19}
 
-\leavevmode\vadjust pre{\hypertarget{ref-lindgren2011}{}}%
+\bibitem[\citeproctext]{ref-lindgren2011}
 Lindgren, F., Rue, H., \& Lindström, J. (2011). {An explicit link
 between Gaussian fields and Gaussian Markov Random Fields: The
 dtochastic partial fifferential rquation spproach}. \emph{Journal of the
@@ -779,20 +760,20 @@ Royal Statistical Society Series B: Statistical Methodology},
 \emph{73}(4), 423--498.
 \url{https://doi.org/10.1111/j.1467-9868.2011.00777.x}
 
-\leavevmode\vadjust pre{\hypertarget{ref-melo-merino2020}{}}%
+\bibitem[\citeproctext]{ref-melo-merino2020}
 Melo-Merino, S. M., Reyes-Bonilla, H., \& Lira-Noriega, A. (2020).
 {Ecological niche models and species distribution models in marine
 environments: A literature review and spatial analysis of evidence}.
 \emph{Ecological Modelling}, \emph{415}, 108837.
 \url{https://doi.org/10.1016/j.ecolmodel.2019.108837}
 
-\leavevmode\vadjust pre{\hypertarget{ref-methot2013}{}}%
+\bibitem[\citeproctext]{ref-methot2013}
 Methot, R. D., \& Wetzel, C. R. (2013). {Stock synthesis: A biological
 and statistical framework for fish stock assessment and fishery
 management}. \emph{Fisheries Research}, \emph{142}, 86--99.
 \url{https://doi.org/10.1016/j.fishres.2012.10.012}
 
-\leavevmode\vadjust pre{\hypertarget{ref-ono2024}{}}%
+\bibitem[\citeproctext]{ref-ono2024}
 Ono, K., Katara, I., Eliasen, S. K., Broms, C., Campbell, A., dos Santos
 Schmidt, T. C., Egan, A., Hølleland, S. N., Jacobsen, J. A., Jansen, T.,
 Mackinson, S., Mousing, E. A., Nash, R. D. M., Nikolioudakis, N.,
@@ -802,51 +783,51 @@ spatiotemporal distribution of mackerel at age in the Nordic Seas during
 2010{-}20}. \emph{ICES Journal of Marine Science}, \emph{81}(7),
 1282--1294. \url{https://doi.org/10.1093/icesjms/fsae087}
 
-\leavevmode\vadjust pre{\hypertarget{ref-ono2016space}{}}%
+\bibitem[\citeproctext]{ref-ono2016space}
 Ono, K., Shelton, A. O., Ward, E. J., Thorson, J. T., Feist, B. E., \&
 Hilborn, R. (2016). {Space-time investigation of the effects of fishing
 on fish populations}. \emph{Ecological Applications}, \emph{26}(2),
 392--406.
 
-\leavevmode\vadjust pre{\hypertarget{ref-phillips2017}{}}%
+\bibitem[\citeproctext]{ref-phillips2017}
 Phillips, N. D., Reid, N., Thys, T., Harrod, C., Payne, N. L., Morgan,
 C. A., White, H. J., Porter, S., \& Houghton, J. D. R. (2017). {Applying
 species distribution modelling to a data poor, pelagic fish complex: the
 ocean sunfishes}. \emph{Journal of Biogeography}, \emph{44}(10),
 2176--2187. \url{https://doi.org/10.1111/jbi.13033}
 
-\leavevmode\vadjust pre{\hypertarget{ref-rcore2024}{}}%
+\bibitem[\citeproctext]{ref-rcore2024}
 R Core Team. (2024). \emph{{R: A language and environment for
 statistical computing}}. R Foundation for Statistical Computing.
 \url{https://www.R-project.org/}
 
-\leavevmode\vadjust pre{\hypertarget{ref-rijnsdorp2018}{}}%
+\bibitem[\citeproctext]{ref-rijnsdorp2018}
 Rijnsdorp, A. D., Bolam, S. G., Garcia, C., Hiddink, J. G., Hintzen, N.
 T., Denderen, P. D. van, \& Kooten, T. van. (2018). {Estimating
 sensitivity of seabed habitats to disturbance by bottom trawling based
 on the longevity of benthic fauna}. \emph{Ecological Applications},
 \emph{28}(5), 1302--1312. \url{https://doi.org/10.1002/eap.1731}
 
-\leavevmode\vadjust pre{\hypertarget{ref-thorson2015}{}}%
+\bibitem[\citeproctext]{ref-thorson2015}
 Thorson, J. T., Shelton, A. O., Ward, E. J., \& Skaug, H. J. (2015).
 {Geostatistical delta-generalized linear mixed models improve precision
 for estimated abundance indices for West Coast groundfishes}. \emph{ICES
 Journal of Marine Science}, \emph{72}(5), 1297--1310.
 \url{https://doi.org/10.1093/icesjms/fsu243}
 
-\leavevmode\vadjust pre{\hypertarget{ref-tolimieri2023sea}{}}%
+\bibitem[\citeproctext]{ref-tolimieri2023sea}
 Tolimieri, N., \& Haltuch, M. (2023). {Sea-level index of recruitment
 variability improves assessment model performance for sablefish
 /textit{Anoplopoma fimbria}}. \emph{Canadian Journal of Fisheries and
 Aquatic Sciences}, \emph{80}(6), 1006--1016.
 
-\leavevmode\vadjust pre{\hypertarget{ref-tolimieri2018}{}}%
+\bibitem[\citeproctext]{ref-tolimieri2018}
 Tolimieri, N., Haltuch, M. A., Lee, Q., Jacox, M. G., \& Bograd, S. J.
 (2018). {Oceanographic drivers of sablefish recruitment in the
 California Current}. \emph{Fisheries Oceanography}, \emph{27}(5),
 458--474. \url{https://doi.org/10.1111/fog.12266}
 
-\leavevmode\vadjust pre{\hypertarget{ref-werner1984}{}}%
+\bibitem[\citeproctext]{ref-werner1984}
 Werner, E. E., \& Gilliam, J. F. (1984). {The ontogenetic niche and
 species interactions in size-structured populations}. \emph{Annual
 Review of Ecology and Systematics}, \emph{15}(1), 393--425.
@@ -857,12 +838,13 @@ Review of Ecology and Systematics}, \emph{15}(1), 393--425.
 \break
 \clearpage
 
-\hypertarget{figures}{%
-\subsection{Figures}\label{figures}}
+\subsection{Figures}\label{figures}
 
 \begin{figure}
 
-{\centering \includegraphics[width=3in,height=\textheight]{plots/hake_spatial_anomaly.png}
+\centering{
+
+\includegraphics[width=3in,height=\textheight]{plots/hake_spatial_anomaly.png}
 
 }
 
@@ -870,13 +852,15 @@ Review of Ecology and Systematics}, \emph{15}(1), 393--425.
 Pacific hake ages 1 -- 5. These fields represent the average anomalies
 across all years, 2003 -- 2023.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=4in,height=\textheight]{plots/sablefish-spatial-anomaly.png}
+\centering{
+
+\includegraphics[width=4in,height=\textheight]{plots/sablefish-spatial-anomaly.png}
 
 }
 
@@ -884,13 +868,15 @@ across all years, 2003 -- 2023.}
 anomalies for sablefish ages 0 -- 9. These fields represent the average
 anomalies across all years, 2003 -- 2023.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=6.2in,height=\textheight]{plots/Pacific hake-follow-age-class.png}
+\centering{
+
+\includegraphics[width=6.2in,height=\textheight]{plots/Pacific hake-follow-age-class.png}
 
 }
 
@@ -900,13 +886,15 @@ cohorts in our dataset (2008, 2010, 2014, 2016). CPUE is standardized to
 1.0 across cohorts for visualization purposes. Full predictions for all
 cohorts are in the Supplementary Information.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=6.2in,height=\textheight]{plots/sablefish-follow-age-class.png}
+\centering{
+
+\includegraphics[width=6.2in,height=\textheight]{plots/sablefish-follow-age-class.png}
 
 }
 
@@ -916,13 +904,15 @@ represents a strong cohorts in our dataset (2008, 2010, 2016, 2021).
 CPUE is standardized to 1.0 across cohorts for visualization purposes.
 Full predictions for all cohorts are in the Supplementary Information.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=3.5in,height=\textheight]{plots/glm_coefficients.png}
+\centering{
+
+\includegraphics[width=3.5in,height=\textheight]{plots/glm_coefficients.png}
 
 }
 
@@ -931,7 +921,7 @@ predicted densities of age a fish in year t to observed numbers the
 following year. The coefficients and 95\% confidence intervals (vertical
 lines) are estimated in log space and presented here in normal space.}
 
-\end{figure}
+\end{figure}%
 
 \clearpage
 
@@ -939,7 +929,9 @@ lines) are estimated in log space and presented here in normal space.}
 
 \begin{figure}
 
-{\centering \includegraphics[width=5in,height=\textheight]{plots/sablefish_spatial_risk.png}
+\centering{
+
+\includegraphics[width=5in,height=\textheight]{plots/sablefish_spatial_risk.png}
 
 }
 
@@ -948,17 +940,18 @@ lines) are estimated in log space and presented here in normal space.}
 CPUE within a radius of 232 km. In the upper plot CPUE is standardized
 to 1.0 across cohorts for visualization purposes.}
 
-\end{figure}
+\end{figure}%
 
 \break
 \clearpage
 
-\hypertarget{supplementary-material}{%
-\section{Supplementary material}\label{supplementary-material}}
+\section{Supplementary material}\label{supplementary-material}
 
 \begin{figure}
 
-{\centering \includegraphics[width=5in,height=\textheight]{plots/spatial_parameters.png}
+\centering{
+
+\includegraphics[width=5in,height=\textheight]{plots/spatial_parameters.png}
 
 }
 
@@ -966,13 +959,15 @@ to 1.0 across cohorts for visualization purposes.}
 (range, and spatial and spatiotemporal standard deviations). Points
 represent mean estimates; lines represent 95\% confidence intervals}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=6.2in,height=\textheight]{plots/Pacific hake-age-class-year.png}
+\centering{
+
+\includegraphics[width=6.2in,height=\textheight]{plots/Pacific hake-age-class-year.png}
 
 }
 
@@ -980,13 +975,15 @@ represent mean estimates; lines represent 95\% confidence intervals}
 per unit effort (CPUE, kg per km2) for Pacific hake; rows represent ages
 (1-5). CPUE has been scaled for each cohort for visualization purposes.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=6.2in,height=\textheight]{plots/sablefish-age-class-year.png}
+\centering{
+
+\includegraphics[width=6.2in,height=\textheight]{plots/sablefish-age-class-year.png}
 
 }
 
@@ -995,13 +992,15 @@ catch per unit effort (CPUE, kg per km2) for sablefish; rows represent
 ages (0-4). CPUE has been scaled for each cohort for visualization
 purposes.}
 
-\end{figure}
+\end{figure}%
 
 \newpage
 
 \begin{figure}
 
-{\centering \includegraphics[width=7in,height=\textheight]{plots/glm_coefficients_time.png}
+\centering{
+
+\includegraphics[width=7in,height=\textheight]{plots/glm_coefficients_time.png}
 
 }
 
@@ -1009,7 +1008,7 @@ purposes.}
 (with random effects in year) relating predicted densities of age a fish
 in year t to observed numbers the following year.}
 
-\end{figure}
+\end{figure}%
 
 
 
