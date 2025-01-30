@@ -14,7 +14,7 @@ library(ggpubr)
 home_dir = getwd()
 fig_dir = paste0(home_dir,"/plots/")
 
-spp_name <- c("Pacific hake", "sablefish")[2]
+spp_name <- c("Pacific hake", "sablefish")[1]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
@@ -58,7 +58,7 @@ xmin = floor( min(pred_all$lon2))
 
 # background map info ##########################################################
 states <- map_data("state")
-west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
+west_coast <- subset(states, region %in% c("california", "oregon", "washington","nevada","idaho","montana"))
 ################################################################################
 
 # plot function
@@ -91,7 +91,7 @@ dist_maps <- function(dfile,
     ggplot(data=west_coast, aes(x = long, y = lat), 
                  fill = grey(0.9), color = "black") +
     geom_polygon(aes(x = long, y = lat, group=group), 
-               fill = grey(0.9), color = "black") +
+               fill = "wheat", color = "grey70") +
     geom_point(data=dfile , 
                aes(lon2, lat, color=p), size=0.01) +
     # might need to adjust here based on the scale of the data, esp 'trans' term.
@@ -141,6 +141,7 @@ if(spp_name=="Pacific hake"){
   ggarrange(m1,m2,m3,m4, m5, nrow = 5)}
 
 ggsave( paste0(fig_dir , spp_name,"-age-class-year.png"), width = 6.2, height = 8)
+ggsave( paste0(fig_dir ,"final_plots/S_", spp_name,"-age-class-year.jpg"), width = 6.2, height = 8)
 # cohort abundance through time ################################################
 
 # sablefish 
@@ -157,6 +158,7 @@ if(spp_name == "sablefish"){
   ggarrange(y2008, y2010, y2016, y2021,nrow = 4)
 
   ggsave( paste0(fig_dir ,spp_name,"-follow-age-class.png"), width = 6.2, height = 6.5)
+  ggsave( paste0(fig_dir ,"final_plots/04_",spp_name,"-follow-age-class.jpg"), width = 6.2, height = 6.5)
 }
 
 
@@ -175,6 +177,7 @@ if(spp_name == "Pacific hake"){
   ggarrange(y2008, y2010, y2014,y2016, nrow = 4)
   
   ggsave( paste0(fig_dir ,spp_name,"-follow-age-class.png"), width = 6.2, height = 6.5)
+  ggsave( paste0(fig_dir ,"final_plots/03_",spp_name,"-follow-age-class.jpg"), width = 6.2, height = 6.5)
 }
 
 

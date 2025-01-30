@@ -203,3 +203,4 @@ combo <- ggpubr::ggarrange( p2, p3, p1,nrow = 1,
                             labels = c('a)','b)','c)'),
                             font.label = list(size=8))
 ggsave(combo, filename="plots/spatial_parameters.png", height = 2, width=5)
+ggsave(combo, filename="plots/final_plots/S1_spatial_parameters.jpg", height = 4, width=5)
