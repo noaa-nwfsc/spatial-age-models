@@ -66,7 +66,7 @@ dist_map2 <- function(dfile=sablefish,
   library(rnaturalearth)
   library(rnaturalearthdata)
   states <- map_data("state")
-  west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
+  west_coast <- subset(states, region %in% c("california", "oregon", "washington","idaho","nevada","montana"))
   
   # adjust axis
   dfile$yrs = axis.mod*(no_ages - dfile$age - 1)
@@ -87,7 +87,7 @@ dist_map2 <- function(dfile=sablefish,
     ggplot(data=west_coast, aes(x = long, y = lat), 
            fill = grey(0.9), color = "black") +
     geom_polygon(aes(x = long, y = lat, group=group), 
-                 fill = grey(0.9), color = "black") +
+                 fill = "wheat", color = "grey70") +
     geom_point(data=dfile , 
                aes(lon2, lat, color=Z), size=0.01) +
     # might need to adjust here based on the scale of the data, esp 'trans' term.
@@ -115,9 +115,11 @@ fig_dir = paste0(getwd(),"/plots/")
 
 dist_map2(sablefish,no_ages = 10, xlim = c(-152, -117))
 ggsave( paste0(fig_dir,"sablefish-spatial-anomaly.png"), width=4, height = 2)
+ggsave( paste0(fig_dir,"final_plots/02_sablefish-spatial-anomaly.jpg"), width=7, height = 6)
 
 dist_map2(hake,no_ages = 6, xlim = c(-140, -117))
 ggsave( paste0(fig_dir,"hake_spatial_anomaly.png"), width=3, height = 2)
+ggsave( paste0(fig_dir,"final_plots/01_hake_spatial_anomaly.jpg"), width=7, height = 6)
 
 
 

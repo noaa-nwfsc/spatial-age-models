@@ -97,4 +97,5 @@ p2 <- ggplot(distances_long, aes(year, value, group = Name, col = Name)) +
 p3 <- gridExtra::grid.arrange(p1, p2, ncol = 1)
 
 ggsave(p3, filename = "plots/sablefish_spatial_risk-old.png", width = 7, height = 6)  
+ggsave(p3, filename = "plots/final_plots/06_sablefish_spatial_risk-old.jpg", width = 7, height = 6)  
 

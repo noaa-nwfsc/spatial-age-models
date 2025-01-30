@@ -29,7 +29,7 @@ xmin = floor( min(sablefish$lon2))
 
 # background map info ##########################################################
 states <- map_data("state")
-west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
+west_coast <- subset(states, region %in% c("california", "oregon", "washington","idaho","nevada","montana"))
 ################################################################################
 
 # plot function
@@ -59,7 +59,7 @@ dist_maps <- function(dfile,
     ggplot(data=west_coast, aes(x = long, y = lat), 
            fill = grey(0.9), color = "black") +
     geom_polygon(aes(x = long, y = lat, group=group), 
-                 fill = grey(0.9), color = "black") +
+                 fill = "wheat", color = "grey70") +
     geom_point(data=dfile , 
                aes(lon2, lat, color=p), size=0.01) +
     # might need to adjust here based on the scale of the data, esp 'trans' term.
@@ -143,4 +143,7 @@ png("plots/sablefish_spatial_risk.png", width=5, heigh=5, res=300, units = 'in')
 patchwork::plot_layout(p1 / p2)
 dev.off()
 
+jpeg("plots/final_plots/06_sablefish_spatial_risk.jpg", width=7, height=7, res=300, units = 'in')
+patchwork::plot_layout(p1 / p2)
+dev.off()
 
