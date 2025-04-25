@@ -1,3 +1,6 @@
+remotes::install_github("pfmc-assessments/nwfscSurvey", "4a7e9a2")
+remotes::install_github("pbs-assess/sdmTMB", "8a44480")
+
 library(nwfscSurvey)
 library(sdmTMB)
 library(tidyverse)
@@ -82,19 +85,19 @@ survey_grid <- add_utm_columns(survey_grid, ll_names = c("lon","lat"))
 for(a in min(subset$age):(max(subset$age) - 1)) {
   # Take all age 'a' fish from 2003 - 2022. construct a coarse mesh (small n)
   subset_age <- dplyr::filter(subset, age == a, year < max_year, n_total > 0)
-  mesh <- make_mesh(subset_age, xy_cols = c("X","Y"), cutoff=50)
+  mesh <- make_mesh(subset_age, xy_cols = c("X","Y"), cutoff=30)
   subset_age$notn <- subset_age$n_total - subset_age$n
   # Fit basic model -- include RW in intercept and spatiotemporal effects (missing 2020)
   fit <- sdmTMB(cbind(n, notn) ~ 1,
-                time_varying = ~ 1, # time-varying intercept
-                time_varying_type = "ar1",
-                           spatial = "on", # spatial field on
-                           spatiotemporal="ar1", # random walk in spatiotemporal
-                           time="year",
-                           mesh=mesh,
-                           family = binomial(),
-                           data=subset_age,
-                extra_time = all_years[which(all_years %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
+                              time_varying = ~ 1, # time-varying intercept
+                              time_varying_type = "ar1",
+                              spatial = "on", # spatial field on
+                              spatiotemporal="ar1", # random walk in spatiotemporal
+                              time="year",
+                              mesh=mesh,
+                              family = binomial(),
+                              data=subset_age,
+                              extra_time = all_years[which(all_years %in% as.numeric(names(table(subset_age$year))) ==FALSE)])
   # These plots are a simple way to make QQ plot for training data -- generally fits well
   #res <- residuals(fit, type = "mle-mvn")
   #qqnorm(res);abline(0, 1)

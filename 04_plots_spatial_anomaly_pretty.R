@@ -63,8 +63,7 @@ dist_map2 <- function(dfile=sablefish,
                       max_year = 2023,
                       no_ages = 5){
   # prep maps
-  library(rnaturalearth)
-  library(rnaturalearthdata)
+
   states <- map_data("state")
   west_coast <- subset(states, region %in% c("california", "oregon", "washington","idaho","nevada","montana"))
   
@@ -82,6 +81,7 @@ dist_map2 <- function(dfile=sablefish,
   if(is.na(midp)==T){midp = 0.1*max(dfile$p)}
   # prep axis
   
+  my_cols <- viridis(n=2, begin = 0.2, end = 0.8, option="magma")
   # begin plotting
   plotx <- 
     ggplot(data=west_coast, aes(x = long, y = lat), 
@@ -92,10 +92,10 @@ dist_map2 <- function(dfile=sablefish,
                aes(lon2, lat, color=Z), size=0.01) +
     # might need to adjust here based on the scale of the data, esp 'trans' term.
     scale_color_gradient2(name = "Anomaly",
-                          low = scales::muted("blue"), 
-                          mid = "white", 
-                          high = scales::muted("red"), 
-                          midpoint = midp) +  # legend title 
+                          low = muted("#92c5de"),
+                          mid = "white",
+                          high = muted("#ca0020"),
+                          midpoint = midp) +  # legend title
     coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
     # might need to adjust x-axes to plot all data
     scale_x_continuous(breaks = xbreaks , labels = xages) +

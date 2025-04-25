@@ -91,7 +91,7 @@ p1 = dist_maps(sablefish, xlim=c(-150,-117))
 
 
 # read in ports
-ports_rad <- readRDS( paste0(home_dir, "/ports_rad.rds"))
+ports_rad <- readRDS( paste0(home_dir, "/archive/ports_rad.rds"))
 
 d$dist_AST <- sqrt((d$X - ports_rad$X[which(ports_rad$Pcid=="AST")])^2 + 
                      (d$Y - ports_rad$Y[which(ports_rad$Pcid=="AST")])^2)
@@ -135,7 +135,7 @@ p2 <- ggplot(distances_long, aes(year, value, group = Name, col = Name)) +
   xlab("Year") + 
   theme_bw() + 
   scale_x_continuous(breaks= seq(2003,2023,5), minor_breaks = 2003:2023) + 
-  scale_color_viridis_d(option="magma", begin=0.2, end=0.8, name = "Port")
+  scale_color_viridis_d(option="rocket", begin=0.2, end=0.8, name = "Port")
 
 
 graphics.off()

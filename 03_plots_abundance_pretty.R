@@ -1,6 +1,6 @@
 library(sdmTMB)
 # library(sdmTMBextra)
-library(INLA)
+#library(INLA)
 library(sf)
 library(tidyverse)
 library(ggplot2)
@@ -102,7 +102,7 @@ dist_maps <- function(dfile,
                           low = scales::muted("black"),
                           midpoint = midp,
                           #high = 'red')+
-                          high = scales::muted("red")) + 
+                          high = scales::muted("#ca0020")) + 
     coord_fixed(xlim=xlim,ylim=c(32,48),ratio=1.3) +
     # might need to adjust x-axes to plot all data
     scale_x_continuous(breaks = seq(-179,-119,axis.mod ), 
