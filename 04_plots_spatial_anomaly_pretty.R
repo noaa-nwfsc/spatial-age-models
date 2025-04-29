@@ -1,9 +1,14 @@
+library(scales)
 library(tidyverse)
 library(ggplot2)
 library(DHARMa)
 library(viridis)
 library(rnaturalearth)
 library(rnaturalearthdata)
+
+
+degree_N <-"\u00B0N"
+Encoding(degree_N)<-"UTF-8"
 
 for(spp in 1:2) {
   spp_name <- c("Pacific hake", "sablefish")[spp]
@@ -45,7 +50,6 @@ sablefish <- dplyr::filter(all_output, species == "sablefish") |>
   dplyr::mutate(omega_s = scale(omega_s))  # normalize for plotting
 
 ####################
-
 
 states <- map_data("state")
 west_coast <- subset(states, region %in% c("california", "oregon", "washington"))
@@ -101,7 +105,7 @@ dist_map2 <- function(dfile=sablefish,
     scale_x_continuous(breaks = xbreaks , labels = xages) +
     #scale_x_continuous(breaks = seq(-179, -119, axis.mod ), labels = labelsx) +
     xlab("Age-class") +
-    ylab("Latitude") +
+    ylab(paste0("Latitude", degree_N)) +
     theme_bw() + 
     theme(axis.text = element_text(size=8),
           axis.title = element_text(size=8),

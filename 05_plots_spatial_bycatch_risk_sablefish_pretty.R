@@ -1,8 +1,12 @@
+library(scales)
 library(tidyverse)
 library(ggplot2)
 library(DHARMa)
 library(viridis)
 home_dir = getwd()
+
+degree_N <-"\u00B0N"
+Encoding(degree_N)<-"UTF-8"
 
 spp <- 2
 spp_name <- c("Pacific hake", "sablefish")[spp]
@@ -77,7 +81,7 @@ dist_maps <- function(dfile,
                        minor_breaks = -117:-179, labels = 2003:max_year) +
     #scale_y_continuous(breaks = c(35,40,45), minor_breaks = c(32:48)) +
     xlab("Year") +
-    ylab("Latitude") +
+    ylab(paste0("Latitude", degree_N)) +
     theme_bw() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
           legend.title = element_text(size = 8),

@@ -2,6 +2,7 @@ library(sdmTMB)
 # library(sdmTMBextra)
 #library(INLA)
 library(sf)
+library(scales)
 library(tidyverse)
 library(ggplot2)
 library(rnaturalearth)
@@ -11,10 +12,13 @@ library(readxl)
 library(Matrix)
 library(ggpubr)
 
+degree_N <-"\u00B0N"
+Encoding(degree_N)<-"UTF-8"
+
 home_dir = getwd()
 fig_dir = paste0(home_dir,"/plots/")
 
-spp_name <- c("Pacific hake", "sablefish")[1]
+spp_name <- c("Pacific hake", "sablefish")[2]
 
 if(spp_name == "Pacific hake") {
   min_age <- 1 # not many age 0s consistently sampled
@@ -109,11 +113,12 @@ dist_maps <- function(dfile,
                      minor_breaks = -117:-179, labels = 2003:max_year) +
     #scale_y_continuous(breaks = c(35,40,45), minor_breaks = c(32:48)) +
     xlab(x_lab) +
-    ylab("Latitude") +
+    ylab(paste0("Latitude", degree_N)) +
     theme_bw() + 
     theme(
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=7),
         axis.title.x = element_text(size = 10),
+        axis.title.y = element_text(size = 8),
         legend.title = element_text(size = 7),
         legend.text = element_text(size = 7),
         legend.key.size = unit(1,'lines')) 
